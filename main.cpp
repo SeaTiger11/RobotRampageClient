@@ -14,6 +14,7 @@ import vulkan_hpp;
 #include "InstanceHelper.h";
 #include "DebugHelper.h";
 #include "PhysicalDeviceHelper.h";
+#include "LogicalDeviceHelper.h";
 
 class RobotRampageClient {
 public:
@@ -30,7 +31,11 @@ private:
     vk::raii::Context context;
     vk::raii::Instance instance = nullptr;
     vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+
     vk::raii::PhysicalDevice physicalDevice = nullptr;
+    vk::raii::Device device = nullptr;
+
+    vk::raii::Queue graphicsQueue = nullptr;
 
     void initWindow() {
         glfwInit();
@@ -45,6 +50,7 @@ private:
         createInstance(context, instance);
         setupDebugMessenger(debugMessenger, instance);
         pickPhysicalDevice(physicalDevice, instance);
+        createLogicalDevice(device, graphicsQueue, physicalDevice);
     }
 
     void mainLoop() {

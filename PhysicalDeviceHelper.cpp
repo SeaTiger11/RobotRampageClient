@@ -16,8 +16,8 @@ void pickPhysicalDevice(vk::raii::PhysicalDevice& physicalDevice, vk::raii::Inst
 		auto queueFamilies = device.getQueueFamilyProperties();
 		uint32_t score = 0;
 
-		// Application uses vulkan 1.4
-		if (!(deviceProperties.apiVersion >= VK_API_VERSION_1_4))
+		// Currently application only uses Vulkan 1.3 features and the docs.vulkan.org tutoril recommended checking for this version of support. This may need to be changed to 1_4 in the future
+		if (!(deviceProperties.apiVersion >= VK_API_VERSION_1_3))
 			continue;
 
 		// Application needs a queue that supports graphics commands
