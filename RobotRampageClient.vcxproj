@@ -140,11 +140,13 @@
     <ClCompile Include="DebugHelper.cpp" />
     <ClCompile Include="InstanceHelper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PhysicalDeviceHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DebugHelper.h" />
     <ClInclude Include="InstanceHelper.h" />
+    <ClInclude Include="PhysicalDeviceHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
