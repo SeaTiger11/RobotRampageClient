@@ -10,8 +10,9 @@ import vulkan_hpp;
 #include <stdexcept>
 #include <cstdlib>
 
-constexpr uint32_t WIDTH = 800;
-constexpr uint32_t HEIGHT = 600;
+#include "Constants.h";
+#include "InstanceHelper.h";
+#include "DebugHelper.h";
 
 class RobotRampageClient {
 public:
@@ -23,7 +24,11 @@ public:
     }
 
 private:
-    GLFWwindow* window;
+    GLFWwindow* window = nullptr;
+
+    vk::raii::Context context;
+    vk::raii::Instance instance = nullptr;
+    vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
 
     void initWindow() {
         glfwInit();
@@ -31,11 +36,12 @@ private:
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
         glfwWindowHint(GLFW_RESIZABLE, false);
 
-        window = glfwCreateWindow(WIDTH, HEIGHT, "Robot Rampage", nullptr, nullptr);
+        window = glfwCreateWindow(Constants::WIDTH, Constants::HEIGHT, Constants::AppName, nullptr, nullptr);
     }
 
     void initVulkan() {
-
+        createInstance(context, instance);
+        setupDebugMessenger(debugMessenger, instance);
     }
 
     void mainLoop() {

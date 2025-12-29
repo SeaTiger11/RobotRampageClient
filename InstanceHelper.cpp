@@ -1,0 +1,62 @@
+#include "InstanceHelper.h";
+
+std::vector<const char*> getRequiredExtensions() {
+    uint32_t glfwExtensionCount = 0;
+    auto glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::vector extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+    if (Constants::enableValidationLayers) {
+        extensions.push_back(vk::EXTDebugUtilsExtensionName);
+    }
+
+    return extensions;
+}
+
+void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
+    constexpr vk::ApplicationInfo appInfo{ 
+        Constants::AppName, 
+        Constants::AppVersion, 
+        Constants::EngineName, 
+        Constants::EngineVersion, 
+        vk::ApiVersion14
+    };
+
+    // Get the required layers
+    std::vector<char const*> requiredLayers;
+    if (Constants::enableValidationLayers) {
+        requiredLayers.assign(Constants::validationLayers.begin(), Constants::validationLayers.end());
+    }
+
+    // Check if the required layers are supported by the vulkan implementation
+    auto layerProperties = context.enumerateInstanceLayerProperties();
+    if (std::ranges::any_of(requiredLayers, [&layerProperties](auto const& requiredLayer) {
+        return std::ranges::none_of(layerProperties, [requiredLayer](auto const& layerProperty) {
+                return strcmp(layerProperty.layerName, requiredLayer) == 0;
+            });
+        })) {
+        throw std::runtime_error("One or more required layers are not supported");
+    }
+
+    // Get the required instance extensions from GLFW.
+    auto requiredExtensions = getRequiredExtensions();
+
+    // Check if the required GLFW extensions are supported by the Vulkan implementation.
+    auto extensionProperties = context.enumerateInstanceExtensionProperties();
+    for (auto const &requiredExtension : requiredExtensions) {
+        if (std::ranges::none_of(extensionProperties, [requiredExtension](auto const& extensionProperty) {
+                return strcmp(extensionProperty.extensionName, requiredExtension) == 0;
+            })) {
+            throw std::runtime_error("Required extension not supported: " + std::string(requiredExtension));
+        }
+    }
+
+    vk::InstanceCreateInfo createInfo;
+    createInfo.setPApplicationInfo(&appInfo)
+        .setEnabledLayerCount(static_cast<uint32_t>(requiredLayers.size()))
+        .setPpEnabledLayerNames(requiredLayers.data())
+        .setEnabledExtensionCount(0)
+        .setPpEnabledExtensionNames(nullptr);
+
+    instance = vk::raii::Instance(context, createInfo);
+}
+
