@@ -45,6 +45,8 @@ private:
     SwapChainData swapChainData;
     std::vector<vk::raii::ImageView> swapChainImageViews;
 
+    vk::raii::PipelineLayout pipelineLayout = nullptr;
+
     void initWindow() {
         glfwInit();
 

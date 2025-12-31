@@ -26,7 +26,7 @@ static std::vector<char> readFile(const std::string& filename) {
 	return shaderModule;
 }
 
-void createGraphicsPipeline(vk::raii::Device& device) {
+void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device) {
 	vk::raii::ShaderModule vertShaderModule = createShaderModule(readFile("shaders/vert.spv"), device);
 	vk::raii::ShaderModule fragShaderModule = createShaderModule(readFile("shaders/frag.spv"), device);
 
@@ -41,4 +41,50 @@ void createGraphicsPipeline(vk::raii::Device& device) {
 	fragShaderStageInfo.setPName("fragMain");
 
 	vk::PipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
+
+	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
+	vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
+	inputAssembly.setTopology(vk::PrimitiveTopology::eTriangleList);
+
+	vk::PipelineRasterizationStateCreateInfo rasterizer;
+	rasterizer.setDepthClampEnable(vk::False);
+	rasterizer.setRasterizerDiscardEnable(vk::False);
+	rasterizer.setPolygonMode(vk::PolygonMode::eFill);
+	rasterizer.setCullMode(vk::CullModeFlagBits::eBack);
+	rasterizer.setFrontFace(vk::FrontFace::eClockwise);
+	rasterizer.setDepthBiasClamp(vk::False);
+	rasterizer.setDepthBiasSlopeFactor(1.0f);
+	rasterizer.setLineWidth(1.0f);
+
+	vk::PipelineMultisampleStateCreateInfo multisampling;
+	multisampling.setRasterizationSamples(vk::SampleCountFlagBits::e1);
+	multisampling.setSampleShadingEnable(vk::False);
+
+	// Notably this is configured to have no colour blending and will need to be modified to enable opacity
+	vk::PipelineColorBlendAttachmentState colorBlendAttachment;
+	colorBlendAttachment.setBlendEnable(vk::False);
+	colorBlendAttachment.setColorWriteMask(vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG | vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA);
+
+	vk::PipelineColorBlendStateCreateInfo colorBlending;
+	colorBlending.setLogicOpEnable(vk::False);
+	colorBlending.setLogicOp(vk::LogicOp::eCopy);
+	colorBlending.setAttachmentCount(1);
+	colorBlending.setPAttachments(&colorBlendAttachment);
+
+	std::vector dynamicStates = {
+		vk::DynamicState::eViewport,
+		vk::DynamicState::eScissor 
+	};
+
+	vk::PipelineDynamicStateCreateInfo dynamicState;
+	dynamicState.setDynamicStateCount(static_cast<uint32_t>(dynamicStates.size()));
+	dynamicState.setPDynamicStates(dynamicStates.data());
+
+	vk::PipelineViewportStateCreateInfo viewportState;
+	viewportState.setViewportCount(1);
+	viewportState.setScissorCount(1);
+
+	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
+
+	pipelineLayout = vk::raii::PipelineLayout(device, pipelineLayoutInfo);
 }

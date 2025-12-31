@@ -8,4 +8,4 @@ import vulkan_hpp;
 
 #include <fstream>
 
-void createGraphicsPipeline(vk::raii::Device& device);
+void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device);
