@@ -17,6 +17,7 @@ import vulkan_hpp;
 #include "PhysicalDeviceHelper.h";
 #include "LogicalDeviceHelper.h";
 #include "SwapChainHelper.h";
+#include "ImageViewHelper.h";
 
 class RobotRampageClient {
 public:
@@ -42,6 +43,7 @@ private:
     vk::raii::Queue presentQueue = nullptr;
 
     SwapChainData swapChainData;
+    std::vector<vk::raii::ImageView> swapChainImageViews;
 
     void initWindow() {
         glfwInit();
@@ -59,6 +61,7 @@ private:
         pickPhysicalDevice(physicalDevice, instance);
         createLogicalDevice(device, graphicsQueue, presentQueue, physicalDevice, surface);
         createSwapChain(swapChainData, physicalDevice, device, surface, window);
+        createImageViews(swapChainImageViews, swapChainData, device);
     }
 
     void mainLoop() {
