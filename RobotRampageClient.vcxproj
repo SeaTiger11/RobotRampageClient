@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DebugHelper.cpp" />
+    <ClCompile Include="GraphicsPipelineHelper.cpp" />
     <ClCompile Include="ImageViewHelper.cpp" />
     <ClCompile Include="InstanceHelper.cpp" />
     <ClCompile Include="LogicalDeviceHelper.cpp" />
@@ -149,12 +150,18 @@
   <ItemGroup>
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DebugHelper.h" />
+    <ClInclude Include="GraphicsPipelineHelper.h" />
     <ClInclude Include="ImageViewHelper.h" />
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />
     <ClInclude Include="PhysicalDeviceHelper.h" />
     <ClInclude Include="SurfaceHelper.h" />
     <ClInclude Include="SwapChainHelper.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="compile.bat" />
+    <None Include="shader.frag" />
+    <None Include="shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
