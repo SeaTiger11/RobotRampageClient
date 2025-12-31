@@ -6,4 +6,6 @@
 import vulkan_hpp;
 #endif
 
-void createGraphicsPipeline();
+#include <fstream>
+
+void createGraphicsPipeline(vk::raii::Device& device);
