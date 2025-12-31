@@ -16,7 +16,7 @@ static std::vector<char> readFile(const std::string& filename) {
 	return buffer;
 }
 
-[[nodiscard]] vk::raii::ShaderModule createShaderModule(const std::vector<char>& code, vk::raii::Device& device) const {
+[[nodiscard]] vk::raii::ShaderModule createShaderModule(const std::vector<char>& code, vk::raii::Device& device) {
 	vk::ShaderModuleCreateInfo createInfo;
 	createInfo.setCodeSize(code.size() * sizeof(char));
 	createInfo.setPCode(reinterpret_cast<const uint32_t*>(code.data()));
