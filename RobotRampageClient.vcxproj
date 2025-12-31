@@ -142,6 +142,7 @@
     <ClCompile Include="LogicalDeviceHelper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PhysicalDeviceHelper.cpp" />
+    <ClCompile Include="SurfaceHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />
     <ClInclude Include="PhysicalDeviceHelper.h" />
+    <ClInclude Include="SurfaceHelper.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

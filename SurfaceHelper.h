@@ -9,7 +9,6 @@ import vulkan_hpp;
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "Constants.h";
 #include <iostream>
 
-void createInstance(vk::raii::Context& context, vk::raii::Instance& instance);
+void createSurface(vk::raii::SurfaceKHR& surface, vk::raii::Instance& instance, GLFWwindow* window);

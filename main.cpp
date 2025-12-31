@@ -13,6 +13,7 @@ import vulkan_hpp;
 #include "Constants.h";
 #include "InstanceHelper.h";
 #include "DebugHelper.h";
+#include "SurfaceHelper.h";
 #include "PhysicalDeviceHelper.h";
 #include "LogicalDeviceHelper.h";
 
@@ -31,11 +32,13 @@ private:
     vk::raii::Context context;
     vk::raii::Instance instance = nullptr;
     vk::raii::DebugUtilsMessengerEXT debugMessenger = nullptr;
+    vk::raii::SurfaceKHR surface = nullptr;
 
     vk::raii::PhysicalDevice physicalDevice = nullptr;
     vk::raii::Device device = nullptr;
 
     vk::raii::Queue graphicsQueue = nullptr;
+    vk::raii::Queue presentQueue = nullptr;
 
     void initWindow() {
         glfwInit();
@@ -49,8 +52,9 @@ private:
     void initVulkan() {
         createInstance(context, instance);
         setupDebugMessenger(debugMessenger, instance);
+        createSurface(surface, instance, window);
         pickPhysicalDevice(physicalDevice, instance);
-        createLogicalDevice(device, graphicsQueue, physicalDevice);
+        createLogicalDevice(device, graphicsQueue, presentQueue, physicalDevice, surface);
     }
 
     void mainLoop() {

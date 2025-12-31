@@ -42,6 +42,20 @@ void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
 
     // Check if the required GLFW extensions are supported by the Vulkan implementation.
     auto extensionProperties = context.enumerateInstanceExtensionProperties();
+    if (Constants::enableValidationLayers && Constants::debugExtensions) {
+        std::cout << "Available extensions:" << std::endl;
+
+        for (const auto& extension : extensionProperties) {
+            std::cout << '\t' << extension.extensionName << std::endl;
+        }
+
+        std::cout << '\n' << "Required Extensions:" << std::endl;
+
+        for (const auto& requiredExtension : requiredExtensions) {
+            std::cout << '\t' << requiredExtension << std::endl;
+        }
+    }
+
     for (auto const &requiredExtension : requiredExtensions) {
         if (std::ranges::none_of(extensionProperties, [requiredExtension](auto const& extensionProperty) {
                 return strcmp(extensionProperty.extensionName, requiredExtension) == 0;
@@ -54,8 +68,8 @@ void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
     createInfo.setPApplicationInfo(&appInfo)
         .setEnabledLayerCount(static_cast<uint32_t>(requiredLayers.size()))
         .setPpEnabledLayerNames(requiredLayers.data())
-        .setEnabledExtensionCount(0)
-        .setPpEnabledExtensionNames(nullptr);
+        .setEnabledExtensionCount(requiredExtensions.size())
+        .setPpEnabledExtensionNames(requiredExtensions.data());
 
     instance = vk::raii::Instance(context, createInfo);
 }
