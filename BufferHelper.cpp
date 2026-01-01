@@ -51,13 +51,30 @@ void createBuffer(RobotRampageClient& app, vk::DeviceSize size, vk::BufferUsageF
 
 void createVertexBuffer(RobotRampageClient& app) {
 	vk::DeviceSize bufferSize = sizeof(app.vertices[0]) * app.vertices.size();
+	vk::raii::Buffer stagingBuffer = nullptr;
+	vk::raii::DeviceMemory stagingBufferMemory = nullptr;
 
-	createBuffer(app, bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, app.stagingBuffer, app.stagingBufferMemory);
-	void* dataStaging = app.stagingBufferMemory.mapMemory(0, bufferSize);
+	createBuffer(app, bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, stagingBuffer, stagingBufferMemory);
+	void* dataStaging = stagingBufferMemory.mapMemory(0, bufferSize);
 	memcpy(dataStaging, app.vertices.data(), bufferSize);
-	app.stagingBufferMemory.unmapMemory();
+	stagingBufferMemory.unmapMemory();
 
 	createBuffer(app, bufferSize, vk::BufferUsageFlagBits::eVertexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, app.vertexBuffer, app.vertexBufferMemory);
 
-	copyBuffer(app, app.stagingBuffer, app.vertexBuffer, bufferSize);
+	copyBuffer(app, stagingBuffer, app.vertexBuffer, bufferSize);
+}
+
+void createIndexBuffer(RobotRampageClient& app) {
+	vk::DeviceSize bufferSize = sizeof(app.indices[0]) * app.indices.size();
+	vk::raii::Buffer stagingBuffer = nullptr;
+	vk::raii::DeviceMemory stagingBufferMemory = nullptr;
+
+	createBuffer(app, bufferSize, vk::BufferUsageFlagBits::eTransferSrc, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, stagingBuffer, stagingBufferMemory);
+	void* dataStaging = stagingBufferMemory.mapMemory(0, bufferSize);
+	memcpy(dataStaging, app.indices.data(), bufferSize);
+	stagingBufferMemory.unmapMemory();
+
+	createBuffer(app, bufferSize, vk::BufferUsageFlagBits::eIndexBuffer | vk::BufferUsageFlagBits::eTransferDst, vk::MemoryPropertyFlagBits::eHostVisible | vk::MemoryPropertyFlagBits::eHostCoherent, app.indexBuffer, app.indexBufferMemory);
+
+	copyBuffer(app, stagingBuffer, app.indexBuffer, bufferSize);
 }

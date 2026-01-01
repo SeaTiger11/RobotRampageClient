@@ -59,6 +59,7 @@ void RobotRampageClient::initVulkan() {
     createGraphicsPipeline(*this);
     createCommandPool(*this);
     createVertexBuffer(*this);
+    createIndexBuffer(*this);
     createCommandBuffers(*this);
     createSyncObjects(*this);
 }
