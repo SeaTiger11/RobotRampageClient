@@ -9,4 +9,4 @@ import vulkan_hpp;
 #include <iostream>;
 #include "Constants.h"
 
-void createLogicalDevice(vk::raii::Device& device, vk::raii::Queue& graphicsQueue, vk::raii::Queue& presentQueue, vk::raii::PhysicalDevice& physicalDevice, vk::raii::SurfaceKHR& surface);
+void createLogicalDevice(vk::raii::Device& device, vk::raii::Queue& queue, uint32_t& queueIndex, vk::raii::PhysicalDevice& physicalDevice, vk::raii::SurfaceKHR& surface);

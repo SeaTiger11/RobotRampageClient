@@ -19,6 +19,8 @@ import vulkan_hpp;
 #include "SwapChainHelper.h";
 #include "ImageViewHelper.h";
 #include "GraphicsPipelineHelper.h";
+#include "CommandPoolHelper.h";
+#include "CommandBufferHelper.h";
 
 class RobotRampageClient {
 public:
@@ -40,14 +42,17 @@ private:
     vk::raii::PhysicalDevice physicalDevice = nullptr;
     vk::raii::Device device = nullptr;
 
-    vk::raii::Queue graphicsQueue = nullptr;
-    vk::raii::Queue presentQueue = nullptr;
+    vk::raii::Queue queue = nullptr;
+    uint32_t queueIndex = ~0;
 
     SwapChainData swapChainData;
     std::vector<vk::raii::ImageView> swapChainImageViews;
 
     vk::raii::PipelineLayout pipelineLayout = nullptr;
     vk::raii::Pipeline graphicsPipeline = nullptr;
+
+    vk::raii::CommandPool commandPool = nullptr;
+    vk::raii::CommandBuffer commandBuffer = nullptr;
 
     void initWindow() {
         glfwInit();
@@ -63,10 +68,12 @@ private:
         setupDebugMessenger(debugMessenger, instance);
         createSurface(surface, instance, window);
         pickPhysicalDevice(physicalDevice, instance);
-        createLogicalDevice(device, graphicsQueue, presentQueue, physicalDevice, surface);
+        createLogicalDevice(device, queue, queueIndex, physicalDevice, surface);
         createSwapChain(swapChainData, physicalDevice, device, surface, window);
         createImageViews(swapChainImageViews, swapChainData, device);
         createGraphicsPipeline(graphicsPipeline, pipelineLayout, device, swapChainData);
+        createCommandPool(commandPool, queueIndex, device);
+        createCommandBuffer(commandBuffer, commandPool, device);
     }
 
     void mainLoop() {

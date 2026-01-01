@@ -137,6 +137,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandBufferHelper.cpp" />
+    <ClCompile Include="CommandPoolHelper.cpp" />
     <ClCompile Include="DebugHelper.cpp" />
     <ClCompile Include="GraphicsPipelineHelper.cpp" />
     <ClCompile Include="ImageViewHelper.cpp" />
@@ -148,6 +150,8 @@
     <ClCompile Include="SwapChainHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBufferHelper.h" />
+    <ClInclude Include="CommandPoolHelper.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DebugHelper.h" />
     <ClInclude Include="GraphicsPipelineHelper.h" />
