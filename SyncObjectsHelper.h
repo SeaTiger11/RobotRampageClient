@@ -6,10 +6,13 @@
 import vulkan_hpp;
 #endif
 
+#include "Constants.h";
+#include "SwapChainHelper.h";
+
 struct SyncObjects {
-	vk::raii::Semaphore presentCompleteSemaphore = nullptr;
-	vk::raii::Semaphore renderFinishedSemaphore = nullptr;
-	vk::raii::Fence drawFence = nullptr;
+	std::vector<vk::raii::Semaphore> presentCompleteSemaphores;
+	std::vector<vk::raii::Semaphore> renderFinishedSemaphores;
+	std::vector<vk::raii::Fence> inFlightFences;
 };
 
-void createSyncObjects(SyncObjects& syncObjects, vk::raii::Device& device);
+void createSyncObjects(SyncObjects& syncObjects, vk::raii::Device& device, SwapChainData& swapChainData);

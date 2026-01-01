@@ -54,9 +54,11 @@ private:
     vk::raii::Pipeline graphicsPipeline = nullptr;
 
     vk::raii::CommandPool commandPool = nullptr;
-    vk::raii::CommandBuffer commandBuffer = nullptr;
+    std::vector<vk::raii::CommandBuffer> commandBuffers;
 
     SyncObjects syncObjects;
+
+    uint32_t frameIndex = 0;
 
     void initWindow() {
         glfwInit();
@@ -77,14 +79,14 @@ private:
         createImageViews(swapChainData, device);
         createGraphicsPipeline(graphicsPipeline, pipelineLayout, device, swapChainData);
         createCommandPool(commandPool, queueIndex, device);
-        createCommandBuffer(commandBuffer, commandPool, device);
-        createSyncObjects(syncObjects, device);
+        createCommandBuffer(commandBuffers, commandPool, device);
+        createSyncObjects(syncObjects, device, swapChainData);
     }
 
     void mainLoop() {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
-            drawFrame(device, commandBuffer, graphicsPipeline, queue, syncObjects, swapChainData);
+            drawFrame(device, commandBuffers, graphicsPipeline, queue, syncObjects, swapChainData, frameIndex);
         }
 
         device.waitIdle();

@@ -39,13 +39,15 @@ void transition_image_layout(
     commandBuffer.pipelineBarrier2(dependencyInfo);
 }
 
-void createCommandBuffer(vk::raii::CommandBuffer& commandBuffer, vk::raii::CommandPool& commandPool, vk::raii::Device& device) {
+void createCommandBuffer(std::vector<vk::raii::CommandBuffer>& commandBuffers, vk::raii::CommandPool& commandPool, vk::raii::Device& device) {
+    commandBuffers.clear();
+
 	vk::CommandBufferAllocateInfo allocInfo;
 	allocInfo.setCommandPool(commandPool);
 	allocInfo.setLevel(vk::CommandBufferLevel::ePrimary);
-	allocInfo.setCommandBufferCount(1);
+	allocInfo.setCommandBufferCount(Constants::MAX_FRAMES_IN_FLIGHT);
 
-	commandBuffer = std::move(vk::raii::CommandBuffers(device, allocInfo).front());
+    commandBuffers = vk::raii::CommandBuffers(device, allocInfo);
 }
 
 void recordCommandBuffer(uint32_t imageIndex, vk::raii::CommandBuffer& commandBuffer, SwapChainData& swapChainData, vk::raii::Pipeline& graphicsPipeline) {
