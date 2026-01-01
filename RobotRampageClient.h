@@ -69,6 +69,8 @@ public:
     {{-0.5f, 0.5f}, {0.0f, 0.0f, 0.0f}}
     };
 
+    vk::raii::Buffer stagingBuffer = nullptr;
+    vk::raii::DeviceMemory stagingBufferMemory = nullptr;
     vk::raii::Buffer vertexBuffer = nullptr;
     vk::raii::DeviceMemory vertexBufferMemory = nullptr;
 

@@ -24,7 +24,7 @@ import vulkan_hpp;
 #include "CommandPoolHelper.h";
 #include "CommandBufferHelper.h";
 #include "SyncObjectsHelper.h";
-#include "VertexBufferHelper.h";
+#include "BufferHelper.h";
 
 void RobotRampageClient::run() {
     initWindow();
