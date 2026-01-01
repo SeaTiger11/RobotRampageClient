@@ -1,17 +1,17 @@
 #include "LogicalDeviceHelper.h";
 
-void createLogicalDevice(vk::raii::Device& device, vk::raii::Queue& queue, uint32_t& queueIndex, vk::raii::PhysicalDevice& physicalDevice, vk::raii::SurfaceKHR& surface) {
-	std::vector<vk::QueueFamilyProperties> queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+void createLogicalDevice(RobotRampageClient& app) {
+	std::vector<vk::QueueFamilyProperties> queueFamilyProperties = app.physicalDevice.getQueueFamilyProperties();
 
 	// Get the first index into queueFamilyProperties that supports both graphics and present
 	for (uint32_t qfpIndex = 0; qfpIndex < queueFamilyProperties.size(); qfpIndex++) {
-		if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) && physicalDevice.getSurfaceSupportKHR(qfpIndex, *surface)) {
-			queueIndex = qfpIndex;
+		if ((queueFamilyProperties[qfpIndex].queueFlags & vk::QueueFlagBits::eGraphics) && app.physicalDevice.getSurfaceSupportKHR(qfpIndex, *app.surface)) {
+			app.queueIndex = qfpIndex;
 			break;
 		}
 	}
 
-	if (queueIndex == ~0) {
+	if (app.queueIndex == ~0) {
 		throw std::runtime_error("Could not find a queue for graphics and present");
 	}
 
@@ -24,7 +24,7 @@ void createLogicalDevice(vk::raii::Device& device, vk::raii::Queue& queue, uint3
 
 	float queuePriority = 0.5f;
 	vk::DeviceQueueCreateInfo deviceQueueCreateInfo;
-	deviceQueueCreateInfo.setQueueFamilyIndex(queueIndex)
+	deviceQueueCreateInfo.setQueueFamilyIndex(app.queueIndex)
 		.setQueueCount(1)
 		.setPQueuePriorities(&queuePriority);
 
@@ -35,6 +35,6 @@ void createLogicalDevice(vk::raii::Device& device, vk::raii::Queue& queue, uint3
 		.setEnabledExtensionCount(static_cast<uint32_t>(Constants::deviceExtensions.size()))
 		.setPpEnabledExtensionNames(Constants::deviceExtensions.data());
 
-	device = vk::raii::Device(physicalDevice, deviceCreateInfo);
-	queue = vk::raii::Queue(device, queueIndex, 0);
+	app.device = vk::raii::Device(app.physicalDevice, deviceCreateInfo);
+	app.queue = vk::raii::Queue(app.device, app.queueIndex, 0);
 }

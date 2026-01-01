@@ -16,19 +16,19 @@ static std::vector<char> readFile(const std::string& filename) {
 	return buffer;
 }
 
-[[nodiscard]] vk::raii::ShaderModule createShaderModule(const std::vector<char>& code, vk::raii::Device& device) {
+[[nodiscard]] vk::raii::ShaderModule createShaderModule(RobotRampageClient& app, const std::vector<char>& code) {
 	vk::ShaderModuleCreateInfo createInfo;
 	createInfo.setCodeSize(code.size() * sizeof(char));
 	createInfo.setPCode(reinterpret_cast<const uint32_t*>(code.data()));
 
-	vk::raii::ShaderModule shaderModule{ device, createInfo };
+	vk::raii::ShaderModule shaderModule{ app.device, createInfo };
 
 	return shaderModule;
 }
 
-void createGraphicsPipeline(vk::raii::Pipeline& graphicsPipeline, vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device, SwapChainData& swapChainData) {
-	vk::raii::ShaderModule vertShaderModule = createShaderModule(readFile("shaders/vert.spv"), device);
-	vk::raii::ShaderModule fragShaderModule = createShaderModule(readFile("shaders/frag.spv"), device);
+void createGraphicsPipeline(RobotRampageClient& app) {
+	vk::raii::ShaderModule vertShaderModule = createShaderModule(app, readFile("shaders/vert.spv"));
+	vk::raii::ShaderModule fragShaderModule = createShaderModule(app, readFile("shaders/frag.spv"));
 
 	vk::PipelineShaderStageCreateInfo vertShaderStageInfo;
 	vertShaderStageInfo.setStage(vk::ShaderStageFlagBits::eVertex);
@@ -88,11 +88,11 @@ void createGraphicsPipeline(vk::raii::Pipeline& graphicsPipeline, vk::raii::Pipe
 	pipelineLayoutInfo.setSetLayoutCount(0);
 	pipelineLayoutInfo.setPushConstantRangeCount(0);
 
-	pipelineLayout = vk::raii::PipelineLayout(device, pipelineLayoutInfo);
+	app.pipelineLayout = vk::raii::PipelineLayout(app.device, pipelineLayoutInfo);
 
 	vk::PipelineRenderingCreateInfo pipelineRenderingCreateInfo;
 	pipelineRenderingCreateInfo.setColorAttachmentCount(1);
-	pipelineRenderingCreateInfo.setPColorAttachmentFormats(&swapChainData.swapChainSurfaceFormat.format);
+	pipelineRenderingCreateInfo.setPColorAttachmentFormats(&app.swapChainSurfaceFormat.format);
 
 	vk::GraphicsPipelineCreateInfo pipelineInfo;
 	pipelineInfo.setPNext(&pipelineRenderingCreateInfo);
@@ -105,8 +105,8 @@ void createGraphicsPipeline(vk::raii::Pipeline& graphicsPipeline, vk::raii::Pipe
 	pipelineInfo.setPMultisampleState(&multisampling);
 	pipelineInfo.setPColorBlendState(&colorBlending);
 	pipelineInfo.setPDynamicState(&dynamicState);
-	pipelineInfo.setLayout(pipelineLayout);
+	pipelineInfo.setLayout(app.pipelineLayout);
 	pipelineInfo.setRenderPass(nullptr);
 
-	graphicsPipeline = vk::raii::Pipeline(device, nullptr, pipelineInfo);
+	app.graphicsPipeline = vk::raii::Pipeline(app.device, nullptr, pipelineInfo);
 }

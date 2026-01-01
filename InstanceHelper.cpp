@@ -12,7 +12,7 @@ std::vector<const char*> getRequiredExtensions() {
     return extensions;
 }
 
-void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
+void createInstance(RobotRampageClient& app) {
     constexpr vk::ApplicationInfo appInfo{ 
         Constants::AppName, 
         Constants::AppVersion, 
@@ -28,7 +28,7 @@ void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
     }
 
     // Check if the required layers are supported by the vulkan implementation
-    auto layerProperties = context.enumerateInstanceLayerProperties();
+    auto layerProperties = app.context.enumerateInstanceLayerProperties();
     if (std::ranges::any_of(requiredLayers, [&layerProperties](auto const& requiredLayer) {
         return std::ranges::none_of(layerProperties, [requiredLayer](auto const& layerProperty) {
                 return strcmp(layerProperty.layerName, requiredLayer) == 0;
@@ -41,7 +41,7 @@ void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
     auto requiredExtensions = getRequiredExtensions();
 
     // Check if the required GLFW extensions are supported by the Vulkan implementation.
-    auto extensionProperties = context.enumerateInstanceExtensionProperties();
+    auto extensionProperties = app.context.enumerateInstanceExtensionProperties();
     if (Constants::enableValidationLayers && Constants::debugExtensions) {
         std::cout << "Available extensions:" << std::endl;
 
@@ -71,6 +71,6 @@ void createInstance(vk::raii::Context& context, vk::raii::Instance& instance) {
         .setEnabledExtensionCount(requiredExtensions.size())
         .setPpEnabledExtensionNames(requiredExtensions.data());
 
-    instance = vk::raii::Instance(context, createInfo);
+    app.instance = vk::raii::Instance(app.context, createInfo);
 }
 

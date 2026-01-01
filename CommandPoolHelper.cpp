@@ -1,9 +1,9 @@
 #include "CommandPoolHelper.h";
 
-void createCommandPool(vk::raii::CommandPool& commandPool, uint32_t& queueIndex, vk::raii::Device& device) {
+void createCommandPool(RobotRampageClient& app) {
 	vk::CommandPoolCreateInfo poolInfo;
 	poolInfo.setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer);
-	poolInfo.setQueueFamilyIndex(queueIndex);
+	poolInfo.setQueueFamilyIndex(app.queueIndex);
 
-	commandPool = vk::raii::CommandPool(device, poolInfo);
+	app.commandPool = vk::raii::CommandPool(app.device, poolInfo);
 }

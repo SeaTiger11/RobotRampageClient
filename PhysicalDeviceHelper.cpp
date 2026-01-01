@@ -1,7 +1,7 @@
 #include "PhysicalDeviceHelper.h";
 
-void pickPhysicalDevice(vk::raii::PhysicalDevice& physicalDevice, vk::raii::Instance& instance) {
-	auto devices = instance.enumeratePhysicalDevices();
+void pickPhysicalDevice(RobotRampageClient& app) {
+	auto devices = app.instance.enumeratePhysicalDevices();
 
 	if (devices.empty()) {
 		throw std::runtime_error("Failed to find GPUs with Vulkan support");
@@ -56,7 +56,7 @@ void pickPhysicalDevice(vk::raii::PhysicalDevice& physicalDevice, vk::raii::Inst
 
 	// Check if the best candidate is actually suitable
 	if (candidates.rbegin()->first > 0) {
-		physicalDevice = candidates.rbegin()->second;
+		app.physicalDevice = candidates.rbegin()->second;
 	}
 	else {
 		throw std::runtime_error("Failed to find a suitable GPU");

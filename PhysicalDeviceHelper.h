@@ -1,12 +1,7 @@
 #pragma once
 
-#if defined(__INTELLISENSE__) || !defined(USE_CPP20_MODULES)
-#include <vulkan/vulkan_raii.hpp>
-#else
-import vulkan_hpp;
-#endif
-
 #include <map>
 #include "Constants.h";
+#include "RobotRampageClient.h";
 
-void pickPhysicalDevice(vk::raii::PhysicalDevice& physicalDevice, vk::raii::Instance& instance);
+void pickPhysicalDevice(RobotRampageClient& app);

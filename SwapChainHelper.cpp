@@ -41,60 +41,60 @@ static uint32_t chooseSwapMinImageCount(vk::SurfaceCapabilitiesKHR const& surfac
 	return minImageCount;
 }
 
-void createImageViews(SwapChainData& swapChainData, vk::raii::Device& device) {
-	swapChainData.swapChainImageViews.clear();
+void createImageViews(RobotRampageClient& app) {
+	app.swapChainImageViews.clear();
 
 	vk::ImageViewCreateInfo imageViewCreateInfo;
 	imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
-	imageViewCreateInfo.setFormat(swapChainData.swapChainSurfaceFormat.format);
+	imageViewCreateInfo.setFormat(app.swapChainSurfaceFormat.format);
 	imageViewCreateInfo.setSubresourceRange({ vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 });
 
-	for (auto& image : swapChainData.swapChainImages) {
+	for (auto& image : app.swapChainImages) {
 		imageViewCreateInfo.image = image;
-		swapChainData.swapChainImageViews.emplace_back(device, imageViewCreateInfo);
+		app.swapChainImageViews.emplace_back(app.device, imageViewCreateInfo);
 	}
 }
 
-void createSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& physicalDevice, vk::raii::Device& device, vk::raii::SurfaceKHR& surface, GLFWwindow* window) {
-	auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
-	swapChainData.swapChainSurfaceFormat = chooseSwapSurfaceFormat(physicalDevice.getSurfaceFormatsKHR(surface));
-	swapChainData.swapChainExtent = chooseSwapExtent(surfaceCapabilities, window);
+void createSwapChain(RobotRampageClient& app) {
+	auto surfaceCapabilities = app.physicalDevice.getSurfaceCapabilitiesKHR(app.surface);
+	app.swapChainSurfaceFormat = chooseSwapSurfaceFormat(app.physicalDevice.getSurfaceFormatsKHR(app.surface));
+	app.swapChainExtent = chooseSwapExtent(surfaceCapabilities, app.window);
 
 	vk::SwapchainCreateInfoKHR swapChainCreateInfo;
-	swapChainCreateInfo.setSurface(*surface);
+	swapChainCreateInfo.setSurface(*app.surface);
 	swapChainCreateInfo.setMinImageCount(chooseSwapMinImageCount(surfaceCapabilities));
-	swapChainCreateInfo.setImageFormat(swapChainData.swapChainSurfaceFormat.format);
-	swapChainCreateInfo.setImageColorSpace(swapChainData.swapChainSurfaceFormat.colorSpace);
-	swapChainCreateInfo.setImageExtent(swapChainData.swapChainExtent);
+	swapChainCreateInfo.setImageFormat(app.swapChainSurfaceFormat.format);
+	swapChainCreateInfo.setImageColorSpace(app.swapChainSurfaceFormat.colorSpace);
+	swapChainCreateInfo.setImageExtent(app.swapChainExtent);
 	swapChainCreateInfo.setImageArrayLayers(1);
 	swapChainCreateInfo.setImageUsage(vk::ImageUsageFlagBits::eColorAttachment);
 	swapChainCreateInfo.setImageSharingMode(vk::SharingMode::eExclusive);
 	swapChainCreateInfo.setPreTransform(surfaceCapabilities.currentTransform);
 	swapChainCreateInfo.setCompositeAlpha(vk::CompositeAlphaFlagBitsKHR::eOpaque);
-	swapChainCreateInfo.setPresentMode(chooseSwapPresentMode(physicalDevice.getSurfacePresentModesKHR(*surface)));
+	swapChainCreateInfo.setPresentMode(chooseSwapPresentMode(app.physicalDevice.getSurfacePresentModesKHR(*app.surface)));
 	swapChainCreateInfo.setClipped(true);
 
-	swapChainData.swapChain = vk::raii::SwapchainKHR(device, swapChainCreateInfo);
-	swapChainData.swapChainImages = swapChainData.swapChain.getImages();
+	app.swapChain = vk::raii::SwapchainKHR(app.device, swapChainCreateInfo);
+	app.swapChainImages = app.swapChain.getImages();
 }
 
-void cleanupSwapChain(SwapChainData& swapChainData) {
-	swapChainData.swapChainImageViews.clear();
-	swapChainData.swapChain = nullptr;
+void cleanupSwapChain(RobotRampageClient& app) {
+	app.swapChainImageViews.clear();
+	app.swapChain = nullptr;
 }
 
-void recreateSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& physicalDevice, vk::raii::Device& device, vk::raii::SurfaceKHR& surface, GLFWwindow* window) {
+void recreateSwapChain(RobotRampageClient& app) {
 	int width = 0, height = 0;
-	glfwGetFramebufferSize(window, &width, &height);
+	glfwGetFramebufferSize(app.window, &width, &height);
 	while (width == 0 || height == 0) {
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(app.window, &width, &height);
 		glfwWaitEvents();
 	}
 
-	device.waitIdle();
+	app.device.waitIdle();
 
-	cleanupSwapChain(swapChainData);
+	cleanupSwapChain(app);
 
-	createSwapChain(swapChainData, physicalDevice, device, surface, window);
-	createImageViews(swapChainData, device);
+	createSwapChain(app);
+	createImageViews(app);
 }

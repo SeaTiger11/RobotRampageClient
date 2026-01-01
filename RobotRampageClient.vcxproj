@@ -158,6 +158,7 @@
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />
     <ClInclude Include="PhysicalDeviceHelper.h" />
+    <ClInclude Include="RobotRampageClient.h" />
     <ClInclude Include="SurfaceHelper.h" />
     <ClInclude Include="SwapChainHelper.h" />
     <ClInclude Include="SyncObjectsHelper.h" />
