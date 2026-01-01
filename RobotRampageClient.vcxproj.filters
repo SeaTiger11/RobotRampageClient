@@ -57,6 +57,9 @@
     <ClCompile Include="SyncObjectsHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="VertexBufferHelper.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Constants.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="RobotRampageClient.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBufferHelper.h">
+      <Filter>Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

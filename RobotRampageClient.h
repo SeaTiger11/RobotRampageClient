@@ -8,6 +8,24 @@ import vulkan_hpp;
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#include <glm/glm.hpp>
+
+struct Vertex {
+    glm::vec2 pos;
+    glm::vec3 color;
+
+    static vk::VertexInputBindingDescription getBindingDescription() {
+        return { 0, sizeof(Vertex), vk::VertexInputRate::eVertex };
+    }
+
+    static std::array<vk::VertexInputAttributeDescription, 2> getAttributeDescriptions() {
+        return {
+            vk::VertexInputAttributeDescription(0, 0, vk::Format::eR32G32Sfloat, offsetof(Vertex, pos)),
+            vk::VertexInputAttributeDescription(1, 0, vk::Format::eR32G32B32Sfloat, offsetof(Vertex, color))
+        };
+    }
+};
+
 class RobotRampageClient {
 public:
     void run();
@@ -44,6 +62,15 @@ public:
     uint32_t frameIndex = 0;
 
     bool framebufferResized = false;
+
+    const std::vector<Vertex> vertices = {
+    {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f, 0.5f}, {0.0f, 0.0f, 0.0f}}
+    };
+
+    vk::raii::Buffer vertexBuffer = nullptr;
+    vk::raii::DeviceMemory vertexBufferMemory = nullptr;
 
 private:
 

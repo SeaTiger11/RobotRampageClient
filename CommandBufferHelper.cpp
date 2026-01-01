@@ -87,6 +87,7 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, app.graphicsPipeline);
     commandBuffer.setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(app.swapChainExtent.width), static_cast<float>(app.swapChainExtent.height), 0.0f, 1.0f));
     commandBuffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), app.swapChainExtent));
+    commandBuffer.bindVertexBuffers(0, *app.vertexBuffer, { 0 });
 
     commandBuffer.draw(3, 1, 0, 0);
 

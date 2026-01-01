@@ -148,6 +148,7 @@
     <ClCompile Include="SurfaceHelper.cpp" />
     <ClCompile Include="SwapChainHelper.cpp" />
     <ClCompile Include="SyncObjectsHelper.cpp" />
+    <ClCompile Include="VertexBufferHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandBufferHelper.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="SurfaceHelper.h" />
     <ClInclude Include="SwapChainHelper.h" />
     <ClInclude Include="SyncObjectsHelper.h" />
+    <ClInclude Include="VertexBufferHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />

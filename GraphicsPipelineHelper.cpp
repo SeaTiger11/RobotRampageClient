@@ -42,7 +42,14 @@ void createGraphicsPipeline(RobotRampageClient& app) {
 
 	vk::PipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
+	auto bindingDescription = Vertex::getBindingDescription();
+	auto attributeDescriptions = Vertex::getAttributeDescriptions();
 	vk::PipelineVertexInputStateCreateInfo vertexInputInfo;
+	vertexInputInfo.setVertexBindingDescriptionCount(1);
+	vertexInputInfo.setVertexBindingDescriptions(bindingDescription);
+	vertexInputInfo.setVertexAttributeDescriptionCount(attributeDescriptions.size());
+	vertexInputInfo.setVertexAttributeDescriptions(attributeDescriptions);
+
 	vk::PipelineInputAssemblyStateCreateInfo inputAssembly;
 	inputAssembly.setTopology(vk::PrimitiveTopology::eTriangleList);
 

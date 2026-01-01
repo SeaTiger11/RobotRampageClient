@@ -24,6 +24,7 @@ import vulkan_hpp;
 #include "CommandPoolHelper.h";
 #include "CommandBufferHelper.h";
 #include "SyncObjectsHelper.h";
+#include "VertexBufferHelper.h";
 
 void RobotRampageClient::run() {
     initWindow();
@@ -57,6 +58,7 @@ void RobotRampageClient::initVulkan() {
     createImageViews(*this);
     createGraphicsPipeline(*this);
     createCommandPool(*this);
+    createVertexBuffer(*this);
     createCommandBuffers(*this);
     createSyncObjects(*this);
 }
