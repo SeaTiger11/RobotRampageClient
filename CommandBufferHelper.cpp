@@ -90,6 +90,7 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     commandBuffer.bindVertexBuffers(0, *app.vertexBuffer, { 0 });
     commandBuffer.bindIndexBuffer(*app.indexBuffer, 0, vk::IndexType::eUint16);
 
+    commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, app.pipelineLayout, 0, *app.descriptorSets[app.frameIndex], nullptr);
     commandBuffer.drawIndexed(app.indices.size(), 1, 0, 0, 0);
 
     commandBuffer.endRendering();

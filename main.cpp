@@ -25,6 +25,7 @@ import vulkan_hpp;
 #include "CommandBufferHelper.h";
 #include "SyncObjectsHelper.h";
 #include "BufferHelper.h";
+#include "DescriptorSetHelper.h";
 
 void RobotRampageClient::run() {
     initWindow();
@@ -56,10 +57,14 @@ void RobotRampageClient::initVulkan() {
     createLogicalDevice(*this);
     createSwapChain(*this);
     createImageViews(*this);
+    createDescriptorSetLayout(*this);
     createGraphicsPipeline(*this);
     createCommandPool(*this);
     createVertexBuffer(*this);
     createIndexBuffer(*this);
+    createUniformBuffers(*this);
+    createDescriptorPool(*this);
+    createDescriptorSets(*this);
     createCommandBuffers(*this);
     createSyncObjects(*this);
 }
@@ -81,6 +86,8 @@ void RobotRampageClient::drawFrame() {
     }
 
     device.resetFences(*inFlightFences[frameIndex]);
+
+    updateUniformBuffer(*this, frameIndex);
 
     commandBuffers[frameIndex].reset();
     recordCommandBuffer(*this, imageIndex);

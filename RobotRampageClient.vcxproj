@@ -140,6 +140,7 @@
     <ClCompile Include="CommandBufferHelper.cpp" />
     <ClCompile Include="CommandPoolHelper.cpp" />
     <ClCompile Include="DebugHelper.cpp" />
+    <ClCompile Include="DescriptorSetHelper.cpp" />
     <ClCompile Include="GraphicsPipelineHelper.cpp" />
     <ClCompile Include="InstanceHelper.cpp" />
     <ClCompile Include="LogicalDeviceHelper.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="CommandPoolHelper.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="DebugHelper.h" />
+    <ClInclude Include="DescriptorSetHelper.h" />
     <ClInclude Include="GraphicsPipelineHelper.h" />
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />

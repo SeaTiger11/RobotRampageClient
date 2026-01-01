@@ -58,7 +58,7 @@ void createGraphicsPipeline(RobotRampageClient& app) {
 	rasterizer.setRasterizerDiscardEnable(vk::False);
 	rasterizer.setPolygonMode(vk::PolygonMode::eFill);
 	rasterizer.setCullMode(vk::CullModeFlagBits::eBack);
-	rasterizer.setFrontFace(vk::FrontFace::eClockwise);
+	rasterizer.setFrontFace(vk::FrontFace::eCounterClockwise);
 	rasterizer.setDepthBiasClamp(vk::False);
 	rasterizer.setDepthBiasSlopeFactor(1.0f);
 	rasterizer.setLineWidth(1.0f);
@@ -92,7 +92,8 @@ void createGraphicsPipeline(RobotRampageClient& app) {
 	viewportState.setScissorCount(1);
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
-	pipelineLayoutInfo.setSetLayoutCount(0);
+	pipelineLayoutInfo.setSetLayoutCount(1);
+	pipelineLayoutInfo.setPSetLayouts(&*app.descriptorSetLayout);
 	pipelineLayoutInfo.setPushConstantRangeCount(0);
 
 	app.pipelineLayout = vk::raii::PipelineLayout(app.device, pipelineLayoutInfo);
