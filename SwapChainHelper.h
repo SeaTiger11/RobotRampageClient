@@ -20,3 +20,7 @@ struct SwapChainData {
 void createImageViews(SwapChainData& swapChainData, vk::raii::Device& device);
 
 void createSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& physicalDevice, vk::raii::Device& device, vk::raii::SurfaceKHR& surface, GLFWwindow* window);
+
+void cleanupSwapChain(SwapChainData& swapChainData);
+
+void recreateSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& physicalDevice, vk::raii::Device& device, vk::raii::SurfaceKHR& surface, GLFWwindow* window);

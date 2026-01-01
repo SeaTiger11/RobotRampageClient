@@ -54,9 +54,6 @@
     <ClCompile Include="SwapChainHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Rendering.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="SyncObjectsHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
@@ -91,9 +88,6 @@
     </ClInclude>
     <ClInclude Include="SwapChainHelper.h">
       <Filter>Header Files\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="Rendering.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SyncObjectsHelper.h">
       <Filter>Header Files\Helpers</Filter>

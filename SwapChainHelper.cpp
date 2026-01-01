@@ -77,3 +77,24 @@ void createSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& phy
 	swapChainData.swapChain = vk::raii::SwapchainKHR(device, swapChainCreateInfo);
 	swapChainData.swapChainImages = swapChainData.swapChain.getImages();
 }
+
+void cleanupSwapChain(SwapChainData& swapChainData) {
+	swapChainData.swapChainImageViews.clear();
+	swapChainData.swapChain = nullptr;
+}
+
+void recreateSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& physicalDevice, vk::raii::Device& device, vk::raii::SurfaceKHR& surface, GLFWwindow* window) {
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(window, &width, &height);
+	while (width == 0 || height == 0) {
+		glfwGetFramebufferSize(window, &width, &height);
+		glfwWaitEvents();
+	}
+
+	device.waitIdle();
+
+	cleanupSwapChain(swapChainData);
+
+	createSwapChain(swapChainData, physicalDevice, device, surface, window);
+	createImageViews(swapChainData, device);
+}

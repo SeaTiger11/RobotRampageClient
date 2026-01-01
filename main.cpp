@@ -11,7 +11,6 @@ import vulkan_hpp;
 #include <cstdlib>
 
 #include "Constants.h";
-#include "Rendering.h";
 
 #include "InstanceHelper.h";
 #include "DebugHelper.h";
@@ -59,13 +58,21 @@ private:
 
     uint32_t frameIndex = 0;
 
+    bool framebufferResized = false;
+
+    static void framebufferResizeCallback(GLFWwindow* window, int width, int height) {
+        auto app = reinterpret_cast<RobotRampageClient*>(glfwGetWindowUserPointer(window));
+        app->framebufferResized = true;
+    }
+
     void initWindow() {
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, false);
 
         window = glfwCreateWindow(Constants::WIDTH, Constants::HEIGHT, Constants::AppName, nullptr, nullptr);
+        glfwSetWindowUserPointer(window, this);
+        glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
     }
 
     void initVulkan() {
@@ -82,16 +89,81 @@ private:
         createSyncObjects(syncObjects, device, swapChainData);
     }
 
+    void drawFrame() {
+        auto fenceResult = device.waitForFences(*syncObjects.inFlightFences[frameIndex], vk::True, UINT64_MAX);
+        if (fenceResult != vk::Result::eSuccess) {
+            throw std::runtime_error("Failed to wait for fence");
+        }
+
+        auto [result, imageIndex] = swapChainData.swapChain.acquireNextImage(UINT64_MAX, *syncObjects.presentCompleteSemaphores[frameIndex], nullptr);
+
+        if (result == vk::Result::eErrorOutOfDateKHR) {
+            recreateSwapChain(swapChainData, physicalDevice, device, surface, window);
+            return;
+        }
+        if (result != vk::Result::eSuccess && result != vk::Result::eSuboptimalKHR) {
+            throw std::runtime_error("Failed to acquire swap chain images");
+        }
+
+        device.resetFences(*syncObjects.inFlightFences[frameIndex]);
+
+        commandBuffers[frameIndex].reset();
+        recordCommandBuffer(imageIndex, commandBuffers[frameIndex], swapChainData, graphicsPipeline);
+
+        vk::PipelineStageFlags waitDestinationStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput);
+        vk::SubmitInfo submitInfo;
+        submitInfo.setWaitSemaphoreCount(1);
+        submitInfo.setPWaitSemaphores(&*syncObjects.presentCompleteSemaphores[frameIndex]);
+        submitInfo.setPWaitDstStageMask(&waitDestinationStageMask);
+        submitInfo.setCommandBufferCount(1);
+        submitInfo.setPCommandBuffers(&*commandBuffers[frameIndex]);
+        submitInfo.setSignalSemaphoreCount(1);
+        submitInfo.setPSignalSemaphores(&*syncObjects.renderFinishedSemaphores[imageIndex]);
+
+        queue.submit(submitInfo, syncObjects.inFlightFences[frameIndex]);
+
+        try {
+            vk::PresentInfoKHR presentInfoKHR;
+            presentInfoKHR.setWaitSemaphoreCount(1);
+            presentInfoKHR.setPWaitSemaphores(&*syncObjects.renderFinishedSemaphores[imageIndex]);
+            presentInfoKHR.setSwapchainCount(1);
+            presentInfoKHR.setPSwapchains(&*swapChainData.swapChain);
+            presentInfoKHR.setPImageIndices(&imageIndex);
+
+            result = queue.presentKHR(presentInfoKHR);
+            if (result == vk::Result::eErrorOutOfDateKHR || result == vk::Result::eSuboptimalKHR || framebufferResized) {
+                framebufferResized = false;
+                recreateSwapChain(swapChainData, physicalDevice, device, surface, window);
+            }
+            else if (result != vk::Result::eSuccess) {
+                throw std::runtime_error("failed to present swap chain image!");
+            }
+        }
+        catch (const vk::SystemError& e) {
+            if (e.code().value() == static_cast<int>(vk::Result::eErrorOutOfDateKHR)) {
+                recreateSwapChain(swapChainData, physicalDevice, device, surface, window);
+                return;
+            }
+            else {
+                throw;
+            }
+        }
+
+        frameIndex = (frameIndex + 1) % Constants::MAX_FRAMES_IN_FLIGHT;
+    }
+
     void mainLoop() {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
-            drawFrame(device, commandBuffers, graphicsPipeline, queue, syncObjects, swapChainData, frameIndex);
+            drawFrame();
         }
 
         device.waitIdle();
     }
 
     void cleanup() {
+        cleanupSwapChain(swapChainData);
+
         glfwDestroyWindow(window);
 
         glfwTerminate();
