@@ -26,7 +26,7 @@ static std::vector<char> readFile(const std::string& filename) {
 	return shaderModule;
 }
 
-void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device) {
+void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device, SwapChainData& swapChainData) {
 	vk::raii::ShaderModule vertShaderModule = createShaderModule(readFile("shaders/vert.spv"), device);
 	vk::raii::ShaderModule fragShaderModule = createShaderModule(readFile("shaders/frag.spv"), device);
 
@@ -73,7 +73,7 @@ void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::
 
 	std::vector dynamicStates = {
 		vk::DynamicState::eViewport,
-		vk::DynamicState::eScissor 
+		vk::DynamicState::eScissor
 	};
 
 	vk::PipelineDynamicStateCreateInfo dynamicState;
@@ -85,6 +85,26 @@ void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::
 	viewportState.setScissorCount(1);
 
 	vk::PipelineLayoutCreateInfo pipelineLayoutInfo;
+	pipelineLayoutInfo.setSetLayoutCount(0);
+	pipelineLayoutInfo.setPushConstantRangeCount(0);
 
 	pipelineLayout = vk::raii::PipelineLayout(device, pipelineLayoutInfo);
+
+	vk::PipelineRenderingCreateInfo pipelineRenderingCreateInfo;
+	pipelineRenderingCreateInfo.setColorAttachmentCount(1);
+	pipelineRenderingCreateInfo.setPColorAttachmentFormats(&swapChainData.swapChainSurfaceFormat.format);
+
+	vk::GraphicsPipelineCreateInfo pipelineInfo;
+	pipelineInfo.setPNext(&pipelineRenderingCreateInfo);
+	pipelineInfo.setStageCount(2);
+	pipelineInfo.setPStages(shaderStages);
+	pipelineInfo.setPVertexInputState(&vertexInputInfo);
+	pipelineInfo.setPInputAssemblyState(&inputAssembly);
+	pipelineInfo.setPViewportState(&viewportState);
+	pipelineInfo.setPRasterizationState(&rasterizer);
+	pipelineInfo.setPMultisampleState(&multisampling);
+	pipelineInfo.setPColorBlendState(&colorBlending);
+	pipelineInfo.setPDynamicState(&dynamicState);
+	pipelineInfo.setLayout(pipelineLayout);
+	pipelineInfo.setRenderPass(nullptr);
 }
