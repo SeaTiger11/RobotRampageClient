@@ -41,6 +41,20 @@ static uint32_t chooseSwapMinImageCount(vk::SurfaceCapabilitiesKHR const& surfac
 	return minImageCount;
 }
 
+void createImageViews(SwapChainData& swapChainData, vk::raii::Device& device) {
+	swapChainData.swapChainImageViews.clear();
+
+	vk::ImageViewCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
+	imageViewCreateInfo.setFormat(swapChainData.swapChainSurfaceFormat.format);
+	imageViewCreateInfo.setSubresourceRange({ vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 });
+
+	for (auto& image : swapChainData.swapChainImages) {
+		imageViewCreateInfo.image = image;
+		swapChainData.swapChainImageViews.emplace_back(device, imageViewCreateInfo);
+	}
+}
+
 void createSwapChain(SwapChainData& swapChainData, vk::raii::PhysicalDevice& physicalDevice, vk::raii::Device& device, vk::raii::SurfaceKHR& surface, GLFWwindow* window) {
 	auto surfaceCapabilities = physicalDevice.getSurfaceCapabilitiesKHR(surface);
 	swapChainData.swapChainSurfaceFormat = chooseSwapSurfaceFormat(physicalDevice.getSurfaceFormatsKHR(surface));

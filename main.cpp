@@ -19,7 +19,6 @@ import vulkan_hpp;
 #include "PhysicalDeviceHelper.h";
 #include "LogicalDeviceHelper.h";
 #include "SwapChainHelper.h";
-#include "ImageViewHelper.h";
 #include "GraphicsPipelineHelper.h";
 #include "CommandPoolHelper.h";
 #include "CommandBufferHelper.h";

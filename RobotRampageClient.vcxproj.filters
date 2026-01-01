@@ -39,9 +39,6 @@
     <ClCompile Include="GraphicsPipelineHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="ImageViewHelper.cpp">
-      <Filter>Source Files\Helpers</Filter>
-    </ClCompile>
     <ClCompile Include="InstanceHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
@@ -78,9 +75,6 @@
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsPipelineHelper.h">
-      <Filter>Header Files\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageViewHelper.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
     <ClInclude Include="InstanceHelper.h">
