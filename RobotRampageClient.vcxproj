@@ -146,8 +146,10 @@
     <ClCompile Include="LogicalDeviceHelper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PhysicalDeviceHelper.cpp" />
+    <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="SurfaceHelper.cpp" />
     <ClCompile Include="SwapChainHelper.cpp" />
+    <ClCompile Include="SyncObjectsHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandBufferHelper.h" />
@@ -159,8 +161,10 @@
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />
     <ClInclude Include="PhysicalDeviceHelper.h" />
+    <ClInclude Include="Rendering.h" />
     <ClInclude Include="SurfaceHelper.h" />
     <ClInclude Include="SwapChainHelper.h" />
+    <ClInclude Include="SyncObjectsHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />

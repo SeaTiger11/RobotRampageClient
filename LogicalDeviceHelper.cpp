@@ -16,7 +16,9 @@ void createLogicalDevice(vk::raii::Device& device, vk::raii::Queue& queue, uint3
 	}
 
 	// Query for the vulkan 1.3 features (features are organised in feature structures based on which version they were released in, so Vulkan13Features is correct to use even with Vulkan 1.4)
-	vk::StructureChain<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVulkan13Features, vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT> featureChain;
+	vk::StructureChain<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVulkan11Features, vk::PhysicalDeviceVulkan13Features, vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT> featureChain;
+	featureChain.get<vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters = vk::True;
+	featureChain.get<vk::PhysicalDeviceVulkan13Features>().synchronization2 = vk::True;
 	featureChain.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering = vk::True;
 	featureChain.get<vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT>().extendedDynamicState = vk::True;
 

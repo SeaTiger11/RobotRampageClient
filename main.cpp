@@ -11,6 +11,8 @@ import vulkan_hpp;
 #include <cstdlib>
 
 #include "Constants.h";
+#include "Rendering.h";
+
 #include "InstanceHelper.h";
 #include "DebugHelper.h";
 #include "SurfaceHelper.h";
@@ -21,6 +23,7 @@ import vulkan_hpp;
 #include "GraphicsPipelineHelper.h";
 #include "CommandPoolHelper.h";
 #include "CommandBufferHelper.h";
+#include "SyncObjectsHelper.h";
 
 class RobotRampageClient {
 public:
@@ -46,13 +49,14 @@ private:
     uint32_t queueIndex = ~0;
 
     SwapChainData swapChainData;
-    std::vector<vk::raii::ImageView> swapChainImageViews;
 
     vk::raii::PipelineLayout pipelineLayout = nullptr;
     vk::raii::Pipeline graphicsPipeline = nullptr;
 
     vk::raii::CommandPool commandPool = nullptr;
     vk::raii::CommandBuffer commandBuffer = nullptr;
+
+    SyncObjects syncObjects;
 
     void initWindow() {
         glfwInit();
@@ -70,16 +74,20 @@ private:
         pickPhysicalDevice(physicalDevice, instance);
         createLogicalDevice(device, queue, queueIndex, physicalDevice, surface);
         createSwapChain(swapChainData, physicalDevice, device, surface, window);
-        createImageViews(swapChainImageViews, swapChainData, device);
+        createImageViews(swapChainData, device);
         createGraphicsPipeline(graphicsPipeline, pipelineLayout, device, swapChainData);
         createCommandPool(commandPool, queueIndex, device);
         createCommandBuffer(commandBuffer, commandPool, device);
+        createSyncObjects(syncObjects, device);
     }
 
     void mainLoop() {
         while (!glfwWindowShouldClose(window)) {
             glfwPollEvents();
+            drawFrame(device, commandBuffer, graphicsPipeline, queue, syncObjects, swapChainData);
         }
+
+        device.waitIdle();
     }
 
     void cleanup() {

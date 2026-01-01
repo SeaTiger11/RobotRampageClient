@@ -1,7 +1,7 @@
 #include "ImageViewHelper.h";
 
-void createImageViews(std::vector<vk::raii::ImageView>& swapChainImageViews, SwapChainData& swapChainData, vk::raii::Device& device) {
-	swapChainImageViews.clear();
+void createImageViews(SwapChainData& swapChainData, vk::raii::Device& device) {
+	swapChainData.swapChainImageViews.clear();
 
 	vk::ImageViewCreateInfo imageViewCreateInfo;
 	imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
@@ -10,6 +10,6 @@ void createImageViews(std::vector<vk::raii::ImageView>& swapChainImageViews, Swa
 
 	for (auto& image : swapChainData.swapChainImages) {
 		imageViewCreateInfo.image = image;
-		swapChainImageViews.emplace_back(device, imageViewCreateInfo);
+		swapChainData.swapChainImageViews.emplace_back(device, imageViewCreateInfo);
 	}
 }

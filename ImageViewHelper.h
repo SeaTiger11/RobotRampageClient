@@ -8,4 +8,4 @@ import vulkan_hpp;
 
 #include "SwapChainHelper.h";
 
-void createImageViews(std::vector<vk::raii::ImageView>& swapChainImageViews, SwapChainData& swapChainData, vk::raii::Device& device);
+void createImageViews(SwapChainData& swapChainData, vk::raii::Device& device);

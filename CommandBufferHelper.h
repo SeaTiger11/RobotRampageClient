@@ -9,3 +9,5 @@ import vulkan_hpp;
 #include "SwapChainHelper.h";
 
 void createCommandBuffer(vk::raii::CommandBuffer& commandBuffer, vk::raii::CommandPool& commandPool, vk::raii::Device& device);
+
+void recordCommandBuffer(uint32_t imageIndex, vk::raii::CommandBuffer& commandBuffer, SwapChainData& swapChainData, vk::raii::Pipeline& graphicsPipeline);
