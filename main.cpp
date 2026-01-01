@@ -47,6 +47,7 @@ private:
     std::vector<vk::raii::ImageView> swapChainImageViews;
 
     vk::raii::PipelineLayout pipelineLayout = nullptr;
+    vk::raii::Pipeline graphicsPipeline = nullptr;
 
     void initWindow() {
         glfwInit();
@@ -65,7 +66,7 @@ private:
         createLogicalDevice(device, graphicsQueue, presentQueue, physicalDevice, surface);
         createSwapChain(swapChainData, physicalDevice, device, surface, window);
         createImageViews(swapChainImageViews, swapChainData, device);
-        createGraphicsPipeline(pipelineLayout, device, swapChainData);
+        createGraphicsPipeline(graphicsPipeline, pipelineLayout, device, swapChainData);
     }
 
     void mainLoop() {

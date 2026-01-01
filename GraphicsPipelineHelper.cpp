@@ -26,19 +26,19 @@ static std::vector<char> readFile(const std::string& filename) {
 	return shaderModule;
 }
 
-void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device, SwapChainData& swapChainData) {
+void createGraphicsPipeline(vk::raii::Pipeline& graphicsPipeline, vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device, SwapChainData& swapChainData) {
 	vk::raii::ShaderModule vertShaderModule = createShaderModule(readFile("shaders/vert.spv"), device);
 	vk::raii::ShaderModule fragShaderModule = createShaderModule(readFile("shaders/frag.spv"), device);
 
 	vk::PipelineShaderStageCreateInfo vertShaderStageInfo;
 	vertShaderStageInfo.setStage(vk::ShaderStageFlagBits::eVertex);
 	vertShaderStageInfo.setModule(vertShaderModule);
-	vertShaderStageInfo.setPName("vertMain");
+	vertShaderStageInfo.setPName("main");
 
 	vk::PipelineShaderStageCreateInfo fragShaderStageInfo;
 	fragShaderStageInfo.setStage(vk::ShaderStageFlagBits::eFragment);
 	fragShaderStageInfo.setModule(fragShaderModule);
-	fragShaderStageInfo.setPName("fragMain");
+	fragShaderStageInfo.setPName("main");
 
 	vk::PipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
 
@@ -107,4 +107,6 @@ void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::
 	pipelineInfo.setPDynamicState(&dynamicState);
 	pipelineInfo.setLayout(pipelineLayout);
 	pipelineInfo.setRenderPass(nullptr);
+
+	graphicsPipeline = vk::raii::Pipeline(device, nullptr, pipelineInfo);
 }

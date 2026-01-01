@@ -9,4 +9,4 @@ import vulkan_hpp;
 #include <fstream>
 #include "SwapChainHelper.h";
 
-void createGraphicsPipeline(vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device, SwapChainData& swapChainData);
+void createGraphicsPipeline(vk::raii::Pipeline& graphicsPipeline, vk::raii::PipelineLayout& pipelineLayout, vk::raii::Device& device, SwapChainData& swapChainData);
