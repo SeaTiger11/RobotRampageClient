@@ -10,3 +10,6 @@ void recreateSwapChain(RobotRampageClient& app);
 
 // Forward declaration, function is actually in ImageViewHelper.cpp
 void createImageViews(RobotRampageClient& app);
+
+// Forward declration, function is actually in ImageHelper.cpp
+void createDepthResources(RobotRampageClient& app);

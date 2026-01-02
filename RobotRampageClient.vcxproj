@@ -142,7 +142,6 @@
     <ClCompile Include="DebugHelper.cpp" />
     <ClCompile Include="DescriptorSetHelper.cpp" />
     <ClCompile Include="GraphicsPipelineHelper.cpp" />
-    <ClCompile Include="ImageViewHelper.cpp" />
     <ClCompile Include="InstanceHelper.cpp" />
     <ClCompile Include="LogicalDeviceHelper.cpp" />
     <ClCompile Include="main.cpp" />
@@ -151,7 +150,7 @@
     <ClCompile Include="SwapChainHelper.cpp" />
     <ClCompile Include="SyncObjectsHelper.cpp" />
     <ClCompile Include="BufferHelper.cpp" />
-    <ClCompile Include="TextureHelper.cpp" />
+    <ClCompile Include="ImageHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandBufferHelper.h" />
@@ -160,7 +159,6 @@
     <ClInclude Include="DebugHelper.h" />
     <ClInclude Include="DescriptorSetHelper.h" />
     <ClInclude Include="GraphicsPipelineHelper.h" />
-    <ClInclude Include="ImageViewHelper.h" />
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />
     <ClInclude Include="PhysicalDeviceHelper.h" />
@@ -169,7 +167,7 @@
     <ClInclude Include="SwapChainHelper.h" />
     <ClInclude Include="SyncObjectsHelper.h" />
     <ClInclude Include="BufferHelper.h" />
-    <ClInclude Include="TextureHelper.h" />
+    <ClInclude Include="ImageHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />

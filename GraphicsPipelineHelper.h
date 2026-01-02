@@ -5,3 +5,6 @@
 #include "RobotRampageClient.h";
 
 void createGraphicsPipeline(RobotRampageClient& app);
+
+// Forward declaration, function is actually in ImageHelper.cpp
+vk::Format findDepthFormat(RobotRampageClient& app);

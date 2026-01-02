@@ -101,6 +101,14 @@ void createGraphicsPipeline(RobotRampageClient& app) {
 	vk::PipelineRenderingCreateInfo pipelineRenderingCreateInfo;
 	pipelineRenderingCreateInfo.setColorAttachmentCount(1);
 	pipelineRenderingCreateInfo.setPColorAttachmentFormats(&app.swapChainSurfaceFormat.format);
+	pipelineRenderingCreateInfo.setDepthAttachmentFormat(findDepthFormat(app));
+
+	vk::PipelineDepthStencilStateCreateInfo depthStencil;
+	depthStencil.setDepthTestEnable(vk::True);
+	depthStencil.setDepthWriteEnable(vk::True);
+	depthStencil.setDepthCompareOp(vk::CompareOp::eLess);
+	depthStencil.setDepthBoundsTestEnable(vk::False);
+	depthStencil.setStencilTestEnable(vk::False);
 
 	vk::GraphicsPipelineCreateInfo pipelineInfo;
 	pipelineInfo.setPNext(&pipelineRenderingCreateInfo);
@@ -111,6 +119,7 @@ void createGraphicsPipeline(RobotRampageClient& app) {
 	pipelineInfo.setPViewportState(&viewportState);
 	pipelineInfo.setPRasterizationState(&rasterizer);
 	pipelineInfo.setPMultisampleState(&multisampling);
+	pipelineInfo.setPDepthStencilState(&depthStencil);
 	pipelineInfo.setPColorBlendState(&colorBlending);
 	pipelineInfo.setPDynamicState(&dynamicState);
 	pipelineInfo.setLayout(app.pipelineLayout);

@@ -1,7 +1,35 @@
-#include "TextureHelper.h";
+#include "ImageHelper.h";
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
+
+vk::raii::ImageView createImageView(RobotRampageClient& app, vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspectFlags) {
+	vk::ImageViewCreateInfo viewInfo;
+	viewInfo.setImage(image);
+	viewInfo.setViewType(vk::ImageViewType::e2D);
+	viewInfo.setFormat(format);
+	viewInfo.setSubresourceRange({ aspectFlags, 0, 1, 0, 1 });
+
+	return vk::raii::ImageView(app.device, viewInfo);
+}
+
+void createImageViews(RobotRampageClient& app) {
+	app.swapChainImageViews.clear();
+
+	vk::ImageViewCreateInfo imageViewCreateInfo;
+	imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
+	imageViewCreateInfo.setFormat(app.swapChainSurfaceFormat.format);
+	imageViewCreateInfo.setSubresourceRange({ vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 });
+
+	for (auto& image : app.swapChainImages) {
+		imageViewCreateInfo.image = image;
+		app.swapChainImageViews.emplace_back(app.device, imageViewCreateInfo);
+	}
+}
+
+void createTextureImageView(RobotRampageClient& app) {
+	app.textureImageView = createImageView(app, app.textureImage, vk::Format::eR8G8B8A8Srgb, vk::ImageAspectFlagBits::eColor);
+}
 
 void copyBufferToImage(RobotRampageClient& app, const vk::raii::Buffer& buffer, vk::raii::Image& image, uint32_t width, uint32_t height) {
 	vk::raii::CommandBuffer commandBuffer = beginSingleTimeCommands(app);
@@ -121,4 +149,39 @@ void createTextureSampler(RobotRampageClient& app) {
 	samplerInfo.setUnnormalizedCoordinates(vk::False);
 
 	app.textureSampler = vk::raii::Sampler(app.device, samplerInfo);
+}
+
+vk::Format findSupportedFormat(RobotRampageClient& app, const std::vector<vk::Format>& candidates, vk::ImageTiling tiling, vk::FormatFeatureFlags features) {
+	for (const auto format : candidates) {
+		vk::FormatProperties props = app.physicalDevice.getFormatProperties(format);
+
+		if (tiling == vk::ImageTiling::eLinear && (props.linearTilingFeatures & features) == features) {
+			return format;
+		}
+		if (tiling == vk::ImageTiling::eOptimal && (props.optimalTilingFeatures & features) == features) {
+			return format;
+		}
+	}
+
+	throw std::runtime_error("Failed to find supported format");
+}
+
+vk::Format findDepthFormat(RobotRampageClient& app) {
+	return findSupportedFormat( 
+		app,
+		{ vk::Format::eD32Sfloat, vk::Format::eD32SfloatS8Uint, vk::Format::eD24UnormS8Uint },
+		vk::ImageTiling::eOptimal,
+		vk::FormatFeatureFlagBits::eDepthStencilAttachment
+	);
+}
+
+bool hasStencilComponent(vk::Format format) {
+	return format == vk::Format::eD32SfloatS8Uint || format == vk::Format::eD24UnormS8Uint;
+}
+
+void createDepthResources(RobotRampageClient& app) {
+	vk::Format depthFormat = findDepthFormat(app);
+
+	createImage(app, app.swapChainExtent.width, app.swapChainExtent.height, depthFormat, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, app.depthImage, app.depthImageMemory);
+	app.depthImageView = createImageView(app, app.depthImage, depthFormat, vk::ImageAspectFlagBits::eDepth);
 }

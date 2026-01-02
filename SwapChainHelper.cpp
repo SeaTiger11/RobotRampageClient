@@ -80,7 +80,7 @@ void recreateSwapChain(RobotRampageClient& app) {
 	app.device.waitIdle();
 
 	cleanupSwapChain(app);
-
 	createSwapChain(app);
 	createImageViews(app);
+	createDepthResources(app);
 }

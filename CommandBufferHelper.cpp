@@ -3,16 +3,17 @@
 void transition_image_layout(
     RobotRampageClient& app,
 
-	uint32_t imageIndex,
-	vk::ImageLayout oldLayout,
-	vk::ImageLayout newLayout,
-	vk::AccessFlags2 srcAccessMask,
-	vk::AccessFlags2 dstAccessMask,
-	vk::PipelineStageFlags2 srcStageMask,
-	vk::PipelineStageFlags2 dstStageMask
+    vk::Image image,
+    vk::ImageLayout oldLayout,
+    vk::ImageLayout newLayout,
+    vk::AccessFlags2 srcAccessMask,
+    vk::AccessFlags2 dstAccessMask,
+    vk::PipelineStageFlags2 srcStageMask,
+    vk::PipelineStageFlags2 dstStageMask,
+    vk::ImageAspectFlags imageAspectFlag
 ) {
     vk::ImageSubresourceRange subresourceRange;
-    subresourceRange.setAspectMask(vk::ImageAspectFlagBits::eColor);
+    subresourceRange.setAspectMask(imageAspectFlag);
     subresourceRange.setBaseMipLevel(0);
     subresourceRange.setLevelCount(1);
     subresourceRange.setBaseArrayLayer(0);
@@ -27,7 +28,7 @@ void transition_image_layout(
     barrier.setNewLayout(newLayout);
     barrier.setSrcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
     barrier.setDstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
-    barrier.setImage(app.swapChainImages[imageIndex]);
+    barrier.setImage(image);
     barrier.setSubresourceRange(subresourceRange);
 
     vk::DependencyInfo dependencyInfo;
@@ -56,13 +57,27 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     // Before starting rendering, transition the swapchain image to COLOR_ATTACHMENT_OPTIMAL
     transition_image_layout(
         app,
-        imageIndex,
+        app.swapChainImages[imageIndex],
         vk::ImageLayout::eUndefined,
         vk::ImageLayout::eColorAttachmentOptimal,
-        {},                                                         // srcAccessMask (no need to wait for previous operations)
-        vk::AccessFlagBits2::eColorAttachmentWrite,                 // dstAccessMask
-        vk::PipelineStageFlagBits2::eColorAttachmentOutput,         // srcStage
-        vk::PipelineStageFlagBits2::eColorAttachmentOutput          // dstStage
+        {},
+        vk::AccessFlagBits2::eColorAttachmentWrite,
+        vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+        vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+        vk::ImageAspectFlagBits::eColor
+    );
+
+    // Transition depth image to depth attachment optimal layout
+    transition_image_layout(
+        app,
+        app.depthImage,
+        vk::ImageLayout::eUndefined,
+        vk::ImageLayout::eDepthAttachmentOptimal,
+        vk::AccessFlagBits2::eDepthStencilAttachmentWrite,
+        vk::AccessFlagBits2::eDepthStencilAttachmentWrite,
+        vk::PipelineStageFlagBits2::eEarlyFragmentTests | vk::PipelineStageFlagBits2::eLateFragmentTests,
+        vk::PipelineStageFlagBits2::eEarlyFragmentTests | vk::PipelineStageFlagBits2::eLateFragmentTests,
+        vk::ImageAspectFlagBits::eDepth
     );
 
     vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
@@ -73,6 +88,14 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     attachmentInfo.setStoreOp(vk::AttachmentStoreOp::eStore);
     attachmentInfo.setClearValue(clearColor);
 
+    vk::ClearValue clearDepth = vk::ClearDepthStencilValue(1.0f, 0.0f);
+    vk::RenderingAttachmentInfo depthAttachmentInfo;
+    depthAttachmentInfo.setImageView(app.depthImageView);
+    depthAttachmentInfo.setImageLayout(vk::ImageLayout::eDepthAttachmentOptimal);
+    depthAttachmentInfo.setLoadOp(vk::AttachmentLoadOp::eClear);
+    depthAttachmentInfo.setStoreOp(vk::AttachmentStoreOp::eDontCare);
+    depthAttachmentInfo.clearValue = clearDepth;
+
     vk::Rect2D renderArea;
     renderArea.setOffset({ 0, 0 });
     renderArea.setExtent(app.swapChainExtent);
@@ -82,6 +105,7 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     renderingInfo.setLayerCount(1);
     renderingInfo.setColorAttachmentCount(1);
     renderingInfo.setPColorAttachments(&attachmentInfo);
+    renderingInfo.setPDepthAttachment(&depthAttachmentInfo);
 
     commandBuffer.beginRendering(renderingInfo);
     commandBuffer.bindPipeline(vk::PipelineBindPoint::eGraphics, app.graphicsPipeline);
@@ -98,13 +122,14 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     // After rendering, transition the swapchain image to PRESENT_SRC
     transition_image_layout(
         app,
-        imageIndex,
+        app.swapChainImages[imageIndex],
         vk::ImageLayout::eColorAttachmentOptimal,
         vk::ImageLayout::ePresentSrcKHR,
-        vk::AccessFlagBits2::eColorAttachmentWrite,             // srcAccessMask
-        {},                                                     // dstAccessMask
-        vk::PipelineStageFlagBits2::eColorAttachmentOutput,     // srcStage
-        vk::PipelineStageFlagBits2::eBottomOfPipe               // dstStage
+        vk::AccessFlagBits2::eColorAttachmentWrite,
+        {},
+        vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+        vk::PipelineStageFlagBits2::eBottomOfPipe,
+        vk::ImageAspectFlagBits::eColor
     );
 
     commandBuffer.end();

@@ -66,10 +66,7 @@
     <ClCompile Include="DescriptorSetHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="TextureHelper.cpp">
-      <Filter>Source Files\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageViewHelper.cpp">
+    <ClCompile Include="ImageHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,10 +113,7 @@
     <ClInclude Include="DescriptorSetHelper.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="TextureHelper.h">
-      <Filter>Header Files\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageViewHelper.h">
+    <ClInclude Include="ImageHelper.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>

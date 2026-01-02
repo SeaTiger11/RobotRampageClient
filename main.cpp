@@ -26,8 +26,7 @@ import vulkan_hpp;
 #include "SyncObjectsHelper.h";
 #include "BufferHelper.h";
 #include "DescriptorSetHelper.h";
-#include "TextureHelper.h";
-#include "ImageViewHelper.h";
+#include "ImageHelper.h";
 
 void RobotRampageClient::run() {
     initWindow();
@@ -62,6 +61,7 @@ void RobotRampageClient::initVulkan() {
     createDescriptorSetLayout(*this);
     createGraphicsPipeline(*this);
     createCommandPool(*this);
+    createDepthResources(*this);
     createTextureImage(*this);
     createTextureImageView(*this);
     createTextureSampler(*this);
