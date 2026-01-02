@@ -150,6 +150,7 @@
     <ClCompile Include="SwapChainHelper.cpp" />
     <ClCompile Include="SyncObjectsHelper.cpp" />
     <ClCompile Include="BufferHelper.cpp" />
+    <ClCompile Include="TextureHelper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommandBufferHelper.h" />
@@ -166,10 +167,14 @@
     <ClInclude Include="SwapChainHelper.h" />
     <ClInclude Include="SyncObjectsHelper.h" />
     <ClInclude Include="BufferHelper.h" />
+    <ClInclude Include="TextureHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\quack.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -13,23 +13,9 @@ uint32_t findMemoryType(RobotRampageClient& app, uint32_t typeFilter, vk::Memory
 }
 
 void copyBuffer(RobotRampageClient& app, vk::raii::Buffer& srcBuffer, vk::raii::Buffer& dstBuffer, vk::DeviceSize size) {
-	vk::CommandBufferAllocateInfo allocInfo;
-	allocInfo.setCommandPool(app.commandPool);
-	allocInfo.setLevel(vk::CommandBufferLevel::ePrimary);
-	allocInfo.setCommandBufferCount(1);
-
-	vk::raii::CommandBuffer commandCopyBuffer = std::move(app.device.allocateCommandBuffers(allocInfo).front());
-
-	commandCopyBuffer.begin(vk::CommandBufferBeginInfo{ vk::CommandBufferUsageFlagBits::eOneTimeSubmit });
+	vk::raii::CommandBuffer commandCopyBuffer = beginSingleTimeCommands(app);
 	commandCopyBuffer.copyBuffer(srcBuffer, dstBuffer, vk::BufferCopy(0, 0, size));
-	commandCopyBuffer.end();
-
-	vk::SubmitInfo submitInfo;
-	submitInfo.setCommandBufferCount(1);
-	submitInfo.setPCommandBuffers(&*commandCopyBuffer);
-
-	app.queue.submit(submitInfo, nullptr);
-	app.queue.waitIdle();
+	endSingleTimeCommands(app, commandCopyBuffer);
 }
 
 void createBuffer(RobotRampageClient& app, vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory) {

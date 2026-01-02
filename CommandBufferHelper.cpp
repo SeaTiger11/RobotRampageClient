@@ -109,3 +109,30 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
 
     commandBuffer.end();
 }
+
+vk::raii::CommandBuffer beginSingleTimeCommands(RobotRampageClient& app) {
+    vk::CommandBufferAllocateInfo allocInfo;
+    allocInfo.setCommandPool(app.commandPool);
+    allocInfo.setLevel(vk::CommandBufferLevel::ePrimary);
+    allocInfo.setCommandBufferCount(1);
+
+    vk::raii::CommandBuffer commandBuffer = std::move(app.device.allocateCommandBuffers(allocInfo).front());
+
+    vk::CommandBufferBeginInfo beginInfo;
+    beginInfo.setFlags(vk::CommandBufferUsageFlagBits::eOneTimeSubmit);
+    
+    commandBuffer.begin(beginInfo);
+
+    return commandBuffer;
+}
+
+void endSingleTimeCommands(RobotRampageClient& app, vk::raii::CommandBuffer& commandBuffer) {
+    commandBuffer.end();
+
+    vk::SubmitInfo submitInfo;
+    submitInfo.setCommandBufferCount(1);
+    submitInfo.setPCommandBuffers(&*commandBuffer);
+
+    app.queue.submit(submitInfo, nullptr);
+    app.queue.waitIdle();
+}

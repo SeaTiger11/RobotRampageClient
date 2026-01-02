@@ -5,6 +5,11 @@
 
 #include "RobotRampageClient.h";
 #include "Constants.h";
+#include "CommandBufferHelper.h";
+
+uint32_t findMemoryType(RobotRampageClient& app, uint32_t typeFilter, vk::MemoryPropertyFlags properties);
+
+void createBuffer(RobotRampageClient& app, vk::DeviceSize size, vk::BufferUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Buffer& buffer, vk::raii::DeviceMemory& bufferMemory);
 
 void createVertexBuffer(RobotRampageClient& app);
 

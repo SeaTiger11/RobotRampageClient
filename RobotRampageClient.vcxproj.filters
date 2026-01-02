@@ -22,6 +22,9 @@
     <Filter Include="Header Files\Helpers">
       <UniqueIdentifier>{b4b320ee-9d28-4f8c-81eb-c704eebe8876}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Textures">
+      <UniqueIdentifier>{3b0c0751-7ed1-48c9-9568-bee5a7bb16d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -61,6 +64,9 @@
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
     <ClCompile Include="DescriptorSetHelper.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureHelper.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,6 +113,9 @@
     <ClInclude Include="DescriptorSetHelper.h">
       <Filter>Header Files\Helpers</Filter>
     </ClInclude>
+    <ClInclude Include="TextureHelper.h">
+      <Filter>Header Files\Helpers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag">
@@ -115,5 +124,10 @@
     <None Include="shaders\shader.vert">
       <Filter>Source Files\Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\quack.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>
