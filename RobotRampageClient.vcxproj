@@ -145,6 +145,7 @@
     <ClCompile Include="InstanceHelper.cpp" />
     <ClCompile Include="LogicalDeviceHelper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelHelper.cpp" />
     <ClCompile Include="PhysicalDeviceHelper.cpp" />
     <ClCompile Include="SurfaceHelper.cpp" />
     <ClCompile Include="SwapChainHelper.cpp" />
@@ -161,6 +162,7 @@
     <ClInclude Include="GraphicsPipelineHelper.h" />
     <ClInclude Include="InstanceHelper.h" />
     <ClInclude Include="LogicalDeviceHelper.h" />
+    <ClInclude Include="ModelHelper.h" />
     <ClInclude Include="PhysicalDeviceHelper.h" />
     <ClInclude Include="RobotRampageClient.h" />
     <ClInclude Include="SurfaceHelper.h" />

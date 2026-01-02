@@ -27,6 +27,7 @@ import vulkan_hpp;
 #include "BufferHelper.h";
 #include "DescriptorSetHelper.h";
 #include "ImageHelper.h";
+#include "ModelHelper.h";
 
 void RobotRampageClient::run() {
     initWindow();
@@ -65,6 +66,7 @@ void RobotRampageClient::initVulkan() {
     createTextureImage(*this);
     createTextureImageView(*this);
     createTextureSampler(*this);
+    loadModel(*this);
     createVertexBuffer(*this);
     createIndexBuffer(*this);
     createUniformBuffers(*this);

@@ -112,7 +112,7 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     commandBuffer.setViewport(0, vk::Viewport(0.0f, 0.0f, static_cast<float>(app.swapChainExtent.width), static_cast<float>(app.swapChainExtent.height), 0.0f, 1.0f));
     commandBuffer.setScissor(0, vk::Rect2D(vk::Offset2D(0, 0), app.swapChainExtent));
     commandBuffer.bindVertexBuffers(0, *app.vertexBuffer, { 0 });
-    commandBuffer.bindIndexBuffer(*app.indexBuffer, 0, vk::IndexType::eUint16);
+    commandBuffer.bindIndexBuffer(*app.indexBuffer, 0, vk::IndexType::eUint32);
 
     commandBuffer.bindDescriptorSets(vk::PipelineBindPoint::eGraphics, app.pipelineLayout, 0, *app.descriptorSets[app.frameIndex], nullptr);
     commandBuffer.drawIndexed(app.indices.size(), 1, 0, 0, 0);

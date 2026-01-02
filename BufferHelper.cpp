@@ -91,8 +91,8 @@ void updateUniformBuffer(RobotRampageClient& app, uint32_t currentImage) {
 
 	UniformBufferObject ubo{};
 	ubo.model = rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.view = lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.proj = glm::perspective(glm::radians(45.0f), static_cast<float>(app.swapChainExtent.width) / static_cast<float>(app.swapChainExtent.height), 0.1f, 10.0f);
+	ubo.view = lookAt(glm::vec3(50.0f, 50.0f, 75.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.proj = glm::perspective(glm::radians(45.0f), static_cast<float>(app.swapChainExtent.width) / static_cast<float>(app.swapChainExtent.height), 0.1f, 150.0f);
 	ubo.proj[1][1] *= -1;
 
 	memcpy(app.uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));

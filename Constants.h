@@ -27,6 +27,9 @@ namespace Constants {
 	constexpr uint32_t WIDTH = 800;
 	constexpr uint32_t HEIGHT = 600;
 
+	const std::string DUCK_MODEL = "models/duck.obj";
+	const std::string DUCK_TEXTURE = "textures/duck.jpg";
+
 	constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 	constexpr std::array<char const*, 1> validationLayers = {

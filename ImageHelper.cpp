@@ -104,7 +104,7 @@ void createImage(RobotRampageClient& app, uint32_t width, uint32_t height, vk::F
 
 void createTextureImage(RobotRampageClient& app) {
 	int texWidth, texHeight, texChannels;
-	stbi_uc* pixels = stbi_load("textures/quack.jpg", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
+	stbi_uc* pixels = stbi_load(Constants::DUCK_TEXTURE.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
 	vk::DeviceSize imageSize = texWidth * texHeight * 4;
 
 	if (!pixels) {
