@@ -1,18 +1,24 @@
 #include "DescriptorSetHelper.h";
 
 void createDescriptorSetLayout(RobotRampageClient& app) {
-	vk::DescriptorSetLayoutBinding uboLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr);
-	vk::DescriptorSetLayoutCreateInfo layoutInfo({}, 1, &uboLayoutBinding);
+	std::array bindings = {
+		vk::DescriptorSetLayoutBinding(0, vk::DescriptorType::eUniformBuffer, 1, vk::ShaderStageFlagBits::eVertex, nullptr),
+		vk::DescriptorSetLayoutBinding(1, vk::DescriptorType::eCombinedImageSampler, 1, vk::ShaderStageFlagBits::eFragment, nullptr)
+	};
+	vk::DescriptorSetLayoutCreateInfo layoutInfo({}, static_cast<uint32_t>(bindings.size()), bindings.data());
 	app.descriptorSetLayout = vk::raii::DescriptorSetLayout(app.device, layoutInfo);
 }
 
 void createDescriptorPool(RobotRampageClient& app) {
-	vk::DescriptorPoolSize poolSize(vk::DescriptorType::eUniformBuffer, Constants::MAX_FRAMES_IN_FLIGHT);
+	std::array poolSizes = {
+		vk::DescriptorPoolSize(vk::DescriptorType::eUniformBuffer, Constants::MAX_FRAMES_IN_FLIGHT),
+		vk::DescriptorPoolSize(vk::DescriptorType::eCombinedImageSampler, Constants::MAX_FRAMES_IN_FLIGHT)
+	};
 	vk::DescriptorPoolCreateInfo poolInfo;
 	poolInfo.setFlags(vk::DescriptorPoolCreateFlagBits::eFreeDescriptorSet);
 	poolInfo.setMaxSets(Constants::MAX_FRAMES_IN_FLIGHT);
-	poolInfo.setPoolSizeCount(1);
-	poolInfo.setPPoolSizes(&poolSize);
+	poolInfo.setPoolSizeCount(static_cast<uint32_t>(poolSizes.size()));
+	poolInfo.setPPoolSizes(poolSizes.data());
 
 	app.descriptorPool = vk::raii::DescriptorPool(app.device, poolInfo);
 }
@@ -33,14 +39,29 @@ void createDescriptorSets(RobotRampageClient& app) {
 		bufferInfo.setOffset(0);
 		bufferInfo.setRange(sizeof(UniformBufferObject));
 
-		vk::WriteDescriptorSet descriptorWrite;
-		descriptorWrite.setDstSet(app.descriptorSets[i]);
-		descriptorWrite.setDstBinding(0);
-		descriptorWrite.setDstArrayElement(0);
-		descriptorWrite.setDescriptorCount(1);
-		descriptorWrite.setDescriptorType(vk::DescriptorType::eUniformBuffer);
-		descriptorWrite.setPBufferInfo(&bufferInfo);
+		vk::DescriptorImageInfo imageInfo;
+		imageInfo.setSampler(app.textureSampler);
+		imageInfo.setImageView(app.textureImageView);
+		imageInfo.setImageLayout(vk::ImageLayout::eShaderReadOnlyOptimal);
 
-		app.device.updateDescriptorSets(descriptorWrite, {});
+		vk::WriteDescriptorSet bufferDescriptorWrite;
+		bufferDescriptorWrite.setDstSet(app.descriptorSets[i]);
+		bufferDescriptorWrite.setDstBinding(0);
+		bufferDescriptorWrite.setDstArrayElement(0);
+		bufferDescriptorWrite.setDescriptorCount(1);
+		bufferDescriptorWrite.setDescriptorType(vk::DescriptorType::eUniformBuffer);
+		bufferDescriptorWrite.setPBufferInfo(&bufferInfo);
+
+		vk::WriteDescriptorSet imageDescriptorWrite;
+		imageDescriptorWrite.setDstSet(app.descriptorSets[i]);
+		imageDescriptorWrite.setDstBinding(1);
+		imageDescriptorWrite.setDstArrayElement(0);
+		imageDescriptorWrite.setDescriptorCount(1);
+		imageDescriptorWrite.setDescriptorType(vk::DescriptorType::eCombinedImageSampler);
+		imageDescriptorWrite.setPImageInfo(&imageInfo);
+
+		std::array descriptorWrites{ bufferDescriptorWrite, imageDescriptorWrite };
+
+		app.device.updateDescriptorSets(descriptorWrites, {});
 	}
 }
