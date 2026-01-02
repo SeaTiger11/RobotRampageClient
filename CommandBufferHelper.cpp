@@ -67,6 +67,19 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
         vk::ImageAspectFlagBits::eColor
     );
 
+    // Transition color image to COLOR_ATTACHMENT_OPTIMAL
+    transition_image_layout(
+        app,
+        app.colorImage,
+        vk::ImageLayout::eUndefined,
+        vk::ImageLayout::eColorAttachmentOptimal,
+        vk::AccessFlagBits2::eColorAttachmentWrite,
+        vk::AccessFlagBits2::eColorAttachmentWrite,
+        vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+        vk::PipelineStageFlagBits2::eColorAttachmentOutput,
+        vk::ImageAspectFlagBits::eColor
+    );
+
     // Transition depth image to depth attachment optimal layout
     transition_image_layout(
         app,
@@ -81,12 +94,15 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     );
 
     vk::ClearValue clearColor = vk::ClearColorValue(0.0f, 0.0f, 0.0f, 1.0f);
-    vk::RenderingAttachmentInfo attachmentInfo;
-    attachmentInfo.setImageView(app.swapChainImageViews[imageIndex]);
-    attachmentInfo.setImageLayout(vk::ImageLayout::eColorAttachmentOptimal);
-    attachmentInfo.setLoadOp(vk::AttachmentLoadOp::eClear);
-    attachmentInfo.setStoreOp(vk::AttachmentStoreOp::eStore);
-    attachmentInfo.setClearValue(clearColor);
+    vk::RenderingAttachmentInfo colorAttachmentInfo;
+    colorAttachmentInfo.setImageView(app.colorImageView);
+    colorAttachmentInfo.setImageLayout(vk::ImageLayout::eColorAttachmentOptimal);
+    colorAttachmentInfo.setResolveMode(vk::ResolveModeFlagBits::eAverage);
+    colorAttachmentInfo.setResolveImageView(app.swapChainImageViews[imageIndex]);
+    colorAttachmentInfo.setResolveImageLayout(vk::ImageLayout::eColorAttachmentOptimal);
+    colorAttachmentInfo.setLoadOp(vk::AttachmentLoadOp::eClear);
+    colorAttachmentInfo.setStoreOp(vk::AttachmentStoreOp::eStore);
+    colorAttachmentInfo.setClearValue(clearColor);
 
     vk::ClearValue clearDepth = vk::ClearDepthStencilValue(1.0f, 0.0f);
     vk::RenderingAttachmentInfo depthAttachmentInfo;
@@ -104,7 +120,7 @@ void recordCommandBuffer(RobotRampageClient& app, uint32_t imageIndex) {
     renderingInfo.setRenderArea(renderArea);
     renderingInfo.setLayerCount(1);
     renderingInfo.setColorAttachmentCount(1);
-    renderingInfo.setPColorAttachments(&attachmentInfo);
+    renderingInfo.setPColorAttachments(&colorAttachmentInfo);
     renderingInfo.setPDepthAttachment(&depthAttachmentInfo);
 
     commandBuffer.beginRendering(renderingInfo);

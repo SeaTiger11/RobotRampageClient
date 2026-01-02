@@ -62,6 +62,7 @@ void RobotRampageClient::initVulkan() {
     createDescriptorSetLayout(*this);
     createGraphicsPipeline(*this);
     createCommandPool(*this);
+    createColorResources(*this);
     createDepthResources(*this);
     createTextureImage(*this);
     createTextureImageView(*this);

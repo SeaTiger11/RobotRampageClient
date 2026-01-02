@@ -3,6 +3,8 @@
 #include "RobotRampageClient.h";
 #include "BufferHelper.h";
 
+void createColorResources(RobotRampageClient& app);
+
 void createImageViews(RobotRampageClient& app);
 
 void createTextureImageView(RobotRampageClient& app);

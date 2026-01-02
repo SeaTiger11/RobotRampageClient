@@ -1,5 +1,38 @@
 #include "PhysicalDeviceHelper.h";
 
+vk::SampleCountFlagBits getMaxUsableSampleCount(RobotRampageClient& app)
+{
+	vk::PhysicalDeviceProperties physicalDeviceProperties = app.physicalDevice.getProperties();
+
+	vk::SampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+	if (counts & vk::SampleCountFlagBits::e64)
+	{
+		return vk::SampleCountFlagBits::e64;
+	}
+	if (counts & vk::SampleCountFlagBits::e32)
+	{
+		return vk::SampleCountFlagBits::e32;
+	}
+	if (counts & vk::SampleCountFlagBits::e16)
+	{
+		return vk::SampleCountFlagBits::e16;
+	}
+	if (counts & vk::SampleCountFlagBits::e8)
+	{
+		return vk::SampleCountFlagBits::e8;
+	}
+	if (counts & vk::SampleCountFlagBits::e4)
+	{
+		return vk::SampleCountFlagBits::e4;
+	}
+	if (counts & vk::SampleCountFlagBits::e2)
+	{
+		return vk::SampleCountFlagBits::e2;
+	}
+
+	return vk::SampleCountFlagBits::e1;
+}
+
 void pickPhysicalDevice(RobotRampageClient& app) {
 	auto devices = app.instance.enumeratePhysicalDevices();
 
@@ -57,6 +90,7 @@ void pickPhysicalDevice(RobotRampageClient& app) {
 	// Check if the best candidate is actually suitable
 	if (candidates.rbegin()->first > 0) {
 		app.physicalDevice = candidates.rbegin()->second;
+		app.msaaSamples = getMaxUsableSampleCount(app);
 	}
 	else {
 		throw std::runtime_error("Failed to find a suitable GPU");

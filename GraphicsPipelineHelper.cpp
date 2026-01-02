@@ -64,7 +64,7 @@ void createGraphicsPipeline(RobotRampageClient& app) {
 	rasterizer.setLineWidth(1.0f);
 
 	vk::PipelineMultisampleStateCreateInfo multisampling;
-	multisampling.setRasterizationSamples(vk::SampleCountFlagBits::e1);
+	multisampling.setRasterizationSamples(app.msaaSamples);
 	multisampling.setSampleShadingEnable(vk::False);
 
 	// Notably this is configured to have no colour blending and will need to be modified to enable opacity

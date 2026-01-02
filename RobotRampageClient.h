@@ -114,6 +114,12 @@ public:
     vk::raii::DeviceMemory depthImageMemory = nullptr;
     vk::raii::ImageView depthImageView = nullptr;
 
+    vk::SampleCountFlagBits msaaSamples = vk::SampleCountFlagBits::e1;
+
+    vk::raii::Image colorImage = nullptr;
+    vk::raii::DeviceMemory colorImageMemory = nullptr;
+    vk::raii::ImageView colorImageView = nullptr;
+
 private:
 
     static void framebufferResizeCallback(GLFWwindow* window, int width, int height);

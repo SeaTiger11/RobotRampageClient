@@ -82,5 +82,6 @@ void recreateSwapChain(RobotRampageClient& app) {
 	cleanupSwapChain(app);
 	createSwapChain(app);
 	createImageViews(app);
+	createColorResources(app);
 	createDepthResources(app);
 }

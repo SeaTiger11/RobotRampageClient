@@ -78,7 +78,7 @@ void generateMipmaps(RobotRampageClient& app, vk::raii::Image& image, vk::Format
 	endSingleTimeCommands(app, commandBuffer);
 }
 
-vk::raii::ImageView createImageView(RobotRampageClient& app, vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspectFlags, uint32_t mipLevels) {
+[[nodiscard]] vk::raii::ImageView createImageView(RobotRampageClient& app, vk::raii::Image& image, vk::Format format, vk::ImageAspectFlags aspectFlags, uint32_t mipLevels) {
 	vk::ImageViewCreateInfo viewInfo;
 	viewInfo.setImage(image);
 	viewInfo.setViewType(vk::ImageViewType::e2D);
@@ -157,17 +157,18 @@ void transitionImageLayout(RobotRampageClient& app, const vk::raii::Image& image
 	endSingleTimeCommands(app, commandBuffer);
 }
 
-void createImage(RobotRampageClient& app, uint32_t width, uint32_t height, uint32_t mipLevels, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& imageMemory) {
+void createImage(RobotRampageClient& app, uint32_t width, uint32_t height, uint32_t mipLevels, vk::SampleCountFlagBits numSamples, vk::Format format, vk::ImageTiling tiling, vk::ImageUsageFlags usage, vk::MemoryPropertyFlags properties, vk::raii::Image& image, vk::raii::DeviceMemory& imageMemory) {
 	vk::ImageCreateInfo imageInfo;
 	imageInfo.setImageType(vk::ImageType::e2D);
 	imageInfo.setFormat(format);
 	imageInfo.setExtent({ width, height, 1 });
 	imageInfo.setMipLevels(mipLevels);
 	imageInfo.setArrayLayers(1);
-	imageInfo.setSamples(vk::SampleCountFlagBits::e1);
+	imageInfo.setSamples(numSamples);
 	imageInfo.setTiling(tiling);
 	imageInfo.setUsage(usage);
 	imageInfo.setSharingMode(vk::SharingMode::eExclusive);
+	imageInfo.setInitialLayout(vk::ImageLayout::eUndefined);
 
 	image = vk::raii::Image(app.device, imageInfo);
 
@@ -198,11 +199,10 @@ void createTextureImage(RobotRampageClient& app) {
 
 	stbi_image_free(pixels);
 
-	createImage(app, texWidth, texHeight, app.mipLevels, vk::Format::eR8G8B8A8Srgb, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferSrc | vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, app.textureImage, app.textureImageMemory);
+	createImage(app, texWidth, texHeight, app.mipLevels, vk::SampleCountFlagBits::e1, vk::Format::eR8G8B8A8Srgb, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransferSrc | vk::ImageUsageFlagBits::eTransferDst | vk::ImageUsageFlagBits::eSampled, vk::MemoryPropertyFlagBits::eDeviceLocal, app.textureImage, app.textureImageMemory);
 
 	transitionImageLayout(app, app.textureImage, vk::ImageLayout::eUndefined, vk::ImageLayout::eTransferDstOptimal, app.mipLevels);
 	copyBufferToImage(app, stagingBuffer, app.textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-	//transitionImageLayout(app, app.textureImage, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal, app.mipLevels);
 
 	generateMipmaps(app, app.textureImage, vk::Format::eR8G8B8A8Srgb, texWidth, texHeight, app.mipLevels);
 }
@@ -261,6 +261,13 @@ bool hasStencilComponent(vk::Format format) {
 void createDepthResources(RobotRampageClient& app) {
 	vk::Format depthFormat = findDepthFormat(app);
 
-	createImage(app, app.swapChainExtent.width, app.swapChainExtent.height, 1, depthFormat, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, app.depthImage, app.depthImageMemory);
+	createImage(app, app.swapChainExtent.width, app.swapChainExtent.height, 1, app.msaaSamples, depthFormat, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eDepthStencilAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, app.depthImage, app.depthImageMemory);
 	app.depthImageView = createImageView(app, app.depthImage, depthFormat, vk::ImageAspectFlagBits::eDepth, 1);
+}
+
+void createColorResources(RobotRampageClient& app) {
+	vk::Format colorFormat = app.swapChainSurfaceFormat.format;
+
+	createImage(app, app.swapChainExtent.width, app.swapChainExtent.height, 1, app.msaaSamples, colorFormat, vk::ImageTiling::eOptimal, vk::ImageUsageFlagBits::eTransientAttachment | vk::ImageUsageFlagBits::eColorAttachment, vk::MemoryPropertyFlagBits::eDeviceLocal, app.colorImage, app.colorImageMemory);
+	app.colorImageView = createImageView(app, app.colorImage, colorFormat, vk::ImageAspectFlagBits::eColor, 1);
 }
