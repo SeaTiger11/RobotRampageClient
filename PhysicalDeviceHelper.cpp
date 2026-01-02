@@ -39,8 +39,8 @@ void pickPhysicalDevice(RobotRampageClient& app) {
 		if (!found)
 			continue;
 
-		// Application requires gemotery shaders
-		if (!deviceFeatures.geometryShader)
+		// Application requires gemotery shaders and sampler anisotropy
+		if (!deviceFeatures.geometryShader || !deviceFeatures.samplerAnisotropy)
 			continue;
 
 		// Prioritise Discrete GPUs as they have a significant performance advantage

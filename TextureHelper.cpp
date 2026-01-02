@@ -99,3 +99,26 @@ void createTextureImage(RobotRampageClient& app) {
 	copyBufferToImage(app, stagingBuffer, app.textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
 	transitionImageLayout(app, app.textureImage, vk::ImageLayout::eTransferDstOptimal, vk::ImageLayout::eShaderReadOnlyOptimal);
 }
+
+void createTextureSampler(RobotRampageClient& app) {
+	vk::PhysicalDeviceProperties properties = app.physicalDevice.getProperties();
+
+	vk::SamplerCreateInfo samplerInfo;
+	samplerInfo.setMagFilter(vk::Filter::eLinear);
+	samplerInfo.setMinFilter(vk::Filter::eLinear);
+	samplerInfo.setMipmapMode(vk::SamplerMipmapMode::eLinear);
+	samplerInfo.setMipLodBias(0.0f);
+	samplerInfo.setMinLod(0.0f);
+	samplerInfo.setMaxLod(0.0f);
+	samplerInfo.setAddressModeU(vk::SamplerAddressMode::eRepeat);
+	samplerInfo.setAddressModeV(vk::SamplerAddressMode::eRepeat);
+	samplerInfo.setAddressModeW(vk::SamplerAddressMode::eRepeat);
+	samplerInfo.setAnisotropyEnable(vk::True);
+	samplerInfo.setMaxAnisotropy(properties.limits.maxSamplerAnisotropy);
+	samplerInfo.setCompareEnable(vk::False);
+	samplerInfo.setCompareOp(vk::CompareOp::eAlways);
+	samplerInfo.setBorderColor(vk::BorderColor::eIntOpaqueBlack);
+	samplerInfo.setUnnormalizedCoordinates(vk::False);
+
+	app.textureSampler = vk::raii::Sampler(app.device, samplerInfo);
+}

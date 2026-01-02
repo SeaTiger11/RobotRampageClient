@@ -41,20 +41,6 @@ static uint32_t chooseSwapMinImageCount(vk::SurfaceCapabilitiesKHR const& surfac
 	return minImageCount;
 }
 
-void createImageViews(RobotRampageClient& app) {
-	app.swapChainImageViews.clear();
-
-	vk::ImageViewCreateInfo imageViewCreateInfo;
-	imageViewCreateInfo.setViewType(vk::ImageViewType::e2D);
-	imageViewCreateInfo.setFormat(app.swapChainSurfaceFormat.format);
-	imageViewCreateInfo.setSubresourceRange({ vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1 });
-
-	for (auto& image : app.swapChainImages) {
-		imageViewCreateInfo.image = image;
-		app.swapChainImageViews.emplace_back(app.device, imageViewCreateInfo);
-	}
-}
-
 void createSwapChain(RobotRampageClient& app) {
 	auto surfaceCapabilities = app.physicalDevice.getSurfaceCapabilitiesKHR(app.surface);
 	app.swapChainSurfaceFormat = chooseSwapSurfaceFormat(app.physicalDevice.getSurfaceFormatsKHR(app.surface));

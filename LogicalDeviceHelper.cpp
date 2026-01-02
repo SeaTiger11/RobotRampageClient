@@ -16,7 +16,11 @@ void createLogicalDevice(RobotRampageClient& app) {
 	}
 
 	// Query for the vulkan 1.3 features (features are organised in feature structures based on which version they were released in, so Vulkan13Features is correct to use even with Vulkan 1.4)
+	vk::PhysicalDeviceFeatures requiredDeviceFeatures2;
+	requiredDeviceFeatures2.setSamplerAnisotropy(true);
+
 	vk::StructureChain<vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVulkan11Features, vk::PhysicalDeviceVulkan13Features, vk::PhysicalDeviceExtendedDynamicStateFeaturesEXT> featureChain;
+	featureChain.get<vk::PhysicalDeviceFeatures2>().features = requiredDeviceFeatures2;
 	featureChain.get<vk::PhysicalDeviceVulkan11Features>().shaderDrawParameters = vk::True;
 	featureChain.get<vk::PhysicalDeviceVulkan13Features>().synchronization2 = vk::True;
 	featureChain.get<vk::PhysicalDeviceVulkan13Features>().dynamicRendering = vk::True;
