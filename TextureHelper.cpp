@@ -1,5 +1,8 @@
 #include "TextureHelper.h";
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 void copyBufferToImage(RobotRampageClient& app, const vk::raii::Buffer& buffer, vk::raii::Image& image, uint32_t width, uint32_t height) {
 	vk::raii::CommandBuffer commandBuffer = beginSingleTimeCommands(app);
 
