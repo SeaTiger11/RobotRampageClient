@@ -4,7 +4,7 @@
 
 This project aims to adapt a board game prototype into digital form using a custom game engine. Furthermore it aims to do so with online pvp added in. The eventual goal will be create a client (this repo) and a seperate server system.
 
-## Core focusses
+## Core focuses
 
 The main goal when creating this project was to focus heavily on good coding and git practises so it can be better managed and expanded.
 
